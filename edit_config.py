@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from gooey import Gooey, GooeyParser
+from classes.args_to_dict import args_to_dict
 import yaml
 
 __author__ = 'ociepkam'
@@ -30,17 +31,7 @@ def main():
 
     args = parser.parse_args()
 
-    args = str(args).split('(')[1][:-1]
-    args_list = args.split(", ")
-    args_dict = {}
-    for arg in args_list:
-        arg_param = arg.split("=")
-        if arg_param[0] != 'Experiment_type':
-            args_dict[arg_param[0]] = int(arg_param[1])
-        else:
-            print arg_param[1]
-            args_dict[arg_param[0]] = arg_param[1]
-    print type(args_dict['Experiment_type'])
+    args_dict = args_to_dict(args)
 
     with open("docs/config.yaml", 'w') as save_file:
         save_file.write(yaml.dump(args_dict))
