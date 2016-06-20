@@ -1,0 +1,3 @@
+{Arrow_show_time: 1, Break_between_fix_and_arrow: 1, Experiment_type: '''images''',
+  Fix_time: 1, Number_of_experiment_blocks: 1, Number_of_experiment_trials: 4, Number_of_training_trials: 4,
+  Resp_time: 1, Start_wait_to_stop: 1, Stop_show_time: 1}
