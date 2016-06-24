@@ -2,10 +2,18 @@
 # -*- coding: utf-8 -*-
 
 from gooey import Gooey, GooeyParser
+from os.path import join
+
 from classes.args_to_dict import args_to_dict
 import yaml
 
 __author__ = 'ociepkam'
+
+
+def load_config():
+    with open(join("docs", "config.yaml")) as yaml_file:
+        doc = yaml.load(yaml_file)
+    return doc
 
 
 @Gooey(language='english',  # Translations configurable via json
@@ -26,5 +34,7 @@ def run():
     args_dict = args_to_dict(args)
 
 
-if __name__ == '__main__':
-    run()
+#if __name__ == '__main__':
+#    run()
+
+load_config()
