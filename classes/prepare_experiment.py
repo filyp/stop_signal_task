@@ -25,7 +25,7 @@ def prepare_stops(number_of_stop_types, number_of_trials, percent_of_trials_with
     stop_table += rest_trials[:missing_trials]
 
     # -1 w stop_table oznacza trial bez stopa
-    trials_without_stop = [-1] * (number_of_trials - 2*len(stop_table))
+    trials_without_stop = [-1] * (number_of_trials - 2 * len(stop_table))
     stop_table += trials_without_stop
     random.shuffle(stop_table)
 
@@ -41,17 +41,16 @@ def prepare_stops(number_of_stop_types, number_of_trials, percent_of_trials_with
 
 def blocks_creator(arrows_table, stop_table, num):
     assert len(stop_table) == len(arrows_table), "len(stop_table) != len(arrows_table)"
-    zipped = zip(arrows_table, stop_table)
+    zipped = [{'arrow': arrow, 'stop': stop} for arrow, stop in zip(arrows_table, stop_table)]
     blocks = [zipped[i:i + len(zipped) / num] for i in range(0, len(zipped), len(zipped) / num)]
     return blocks
 
 
 def prepare_trials(number_of_blocks, number_of_experiment_trials, number_of_training_trials,
                    number_of_stop_types, percent_of_trials_with_stop, number_of_arrows):
-
     assert percent_of_trials_with_stop <= 50, "procent stopow nie moze byc wiekszy od 50"
 
-    # prepare trening
+    # prepare training
     training_arrows_table = prepare_arrows(number_of_arrows_types=number_of_arrows,
                                            number_of_trials=number_of_training_trials)
 
@@ -73,9 +72,9 @@ def prepare_trials(number_of_blocks, number_of_experiment_trials, number_of_trai
                                       stop_table=experiment_stop_table,
                                       num=number_of_blocks)
 
-
+    print training_block
     print experiment_block
 
 
 prepare_trials(number_of_blocks=2, number_of_experiment_trials=10, number_of_training_trials=20,
-                   number_of_stop_types=2, percent_of_trials_with_stop=50, number_of_arrows=2)
+               number_of_stop_types=2, percent_of_trials_with_stop=50, number_of_arrows=2)
