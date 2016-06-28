@@ -25,7 +25,7 @@ def prepare_stops(number_of_stop_types, number_of_trials, percent_of_trials_with
     stop_table += rest_trials[:missing_trials]
 
     # -1 w stop_table oznacza trial bez stopa
-    trials_without_stop = [-1] * (number_of_trials - 2 * len(stop_table))
+    trials_without_stop = [None] * (number_of_trials - 2 * len(stop_table))
     stop_table += trials_without_stop
     random.shuffle(stop_table)
 
@@ -34,7 +34,7 @@ def prepare_stops(number_of_stop_types, number_of_trials, percent_of_trials_with
     for trial in stop_table:
         new_stop_table.append(trial)
         if trial >= 0:
-            new_stop_table.append(-1)
+            new_stop_table.append(None)
 
     return new_stop_table
 
