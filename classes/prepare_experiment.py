@@ -72,9 +72,6 @@ def prepare_trials(number_of_blocks, number_of_experiment_trials, number_of_trai
                                       stop_table=experiment_stop_table,
                                       num=number_of_blocks)
 
-    print training_block
-    print experiment_block
+    return training_block, experiment_block
 
 
-prepare_trials(number_of_blocks=2, number_of_experiment_trials=10, number_of_training_trials=20,
-               number_of_stop_types=2, percent_of_trials_with_stop=50, number_of_arrows=2)
