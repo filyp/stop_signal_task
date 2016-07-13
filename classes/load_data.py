@@ -1,6 +1,7 @@
 import os
 from psychopy import visual
 from pygame import mixer
+import codecs
 
 
 def load_data(win, folder_name):
@@ -11,13 +12,13 @@ def load_data(win, folder_name):
     """
     mixer.init()
 
-    names = [file for file in os.listdir(folder_name)]
+    names = [f for f in os.listdir(folder_name)]
     data = list()
     for name in names:
         try:
-            f = visual.ImageStim(win, image=os.path.join(folder_name, name),
-                                 interpolate=True)
-            data.append(('image', name.split('.')[0], f))
+            image = visual.ImageStim(win, image=os.path.join(folder_name, name),
+                                     interpolate=True)
+            data.append(('image', name.split('.')[0], image))
         except:
             pass
         try:
