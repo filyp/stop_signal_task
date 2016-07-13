@@ -2,6 +2,14 @@ import os
 from psychopy import visual
 from pygame import mixer
 import codecs
+from os.path import join
+import yaml
+
+
+def load_config():
+    with open(join("docs", "config.yaml")) as yaml_file:
+        doc = yaml.load(yaml_file)
+    return doc
 
 
 def load_data(win, folder_name):
@@ -16,16 +24,15 @@ def load_data(win, folder_name):
     data = list()
     for name in names:
         try:
-            image = visual.ImageStim(win, image=os.path.join(folder_name, name),
-                                     interpolate=True)
-            data.append(('image', name.split('.')[0], image))
-        except:
-            pass
-        try:
             mixer.music.load(os.path.join(folder_name, name))
             data.append(('sound', name.split('.')[0], mixer.music))
         except:
-            raise Exception('Error while loading a file ' + name)
+            try:
+                image = visual.ImageStim(win, image=os.path.join(folder_name, name),
+                                         interpolate=True)
+                data.append(('image', name.split('.')[0], image))
+            except:
+                raise Exception('Error while loading a file ' + name)
     return data
 
 

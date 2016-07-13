@@ -22,12 +22,13 @@ def args_to_dict(args):
 
 
 @Gooey(language='english',  # Translations configurable via json
-       default_size=(450, 500),  # starting size of the GUI
+       default_size=(550, 500),  # starting size of the GUI
        required_cols=1,  # number of columns in the "Required" section
        optional_cols=3,  # number of columns in the "Optional" section
        )
 def main():
     parser = GooeyParser(description='Create_config')
+    parser.add_argument('Observer', action='store', help='Observer id')
     parser.add_argument('Experiment_type', default='images', choices=['images', 'text', 'sound'], help='Choice')
     parser.add_argument('Number_of_training_trials', default=4, action='store', type=int, help='Number')
     parser.add_argument('Number_of_experiment_blocks', default=1, action='store', type=int, help='Number')
@@ -42,6 +43,8 @@ def main():
 
     parser.add_argument('Fix_time', default=1, action='store', type=int, help='Number')
     parser.add_argument('Break_between_fix_and_arrow', default=1, action='store', type=int, help='Number')
+
+    parser.add_argument('screen_color', default='Gainsboro', action='store', help='screen_color')
 
     args = parser.parse_args()
 
