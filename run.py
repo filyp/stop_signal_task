@@ -5,6 +5,7 @@ from classes.prepare_experiment import prepare_trials
 from classes.load_data import load_data, load_config
 from classes.screen import create_win
 from classes.experiment_info import experiment_info
+from classes.ophthalmic_procedure import ophthalmic_procedure
 
 __author__ = 'ociepkam'
 
@@ -14,7 +15,7 @@ def run():
     part_id, observer_id, date = experiment_info(config['Observer'])
 
     # screen
-    win = create_win(screen_color=config['screen_color'])
+    win, screen_res, frames_per_sec = create_win(screen_color=config['screen_color'])
 
     # prepare experiment
     stops = load_data(win=win, folder_name="stops")
@@ -27,11 +28,13 @@ def run():
                                                       percent_of_trials_with_stop=config['Percent_of_trials_with_stop'],
                                                       number_of_arrows=len(arrows))
 
-
+    if config['Ophthalmic_procedure']:
+        ophthalmic_procedure(win=win, send_triggers=False, screen_res=screen_res, frames_per_sec=frames_per_sec)
 run()
 
 """
 TODO:
 stop w postaci wyrazu
 strzalka w postaci wyrazu
+triggery
 """

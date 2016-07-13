@@ -1,6 +1,8 @@
 import datetime
 from psychopy import gui
 
+TEXT_SIZE = 40
+
 
 def experiment_info(observer):
     """

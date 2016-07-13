@@ -17,7 +17,13 @@ def args_to_dict(args):
         try:
             args_dict[arg_param[0]] = int(arg_param[1])
         except:
-            args_dict[arg_param[0]] = arg_param[1][1:-1]
+            temp = arg_param[1].split('\'')
+            temp = [word for word in temp if word is not '']
+            args_dict[arg_param[0]] = temp[0]
+            try:
+                args_dict[arg_param[0]] = bool(args_dict[arg_param[0]])
+            except:
+                pass
     return args_dict
 
 
@@ -45,6 +51,9 @@ def main():
     parser.add_argument('Break_between_fix_and_arrow', default=1, action='store', type=int, help='Number')
 
     parser.add_argument('screen_color', default='Gainsboro', action='store', help='screen_color')
+
+    parser.add_argument('Ophthalmic_procedure', default='True', choices=['True', 'False'], help='Choice')
+
 
     args = parser.parse_args()
 
