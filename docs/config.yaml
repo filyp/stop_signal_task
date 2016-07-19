@@ -1,4 +1,17 @@
-{Arrow_show_time: 1, Break_between_fix_and_arrow: 1, Fix_time: 1, Text_size: 40,
-  Number_of_experiment_blocks: 2, Number_of_experiment_trials: 20, Number_of_training_trials: 4,
-  Observer: Mis, Ophthalmic_procedure: false, Percent_of_trials_with_stop: 25, Resp_time: 1,
-  Start_wait_to_stop: 1, Stop_show_time: 1, Screen_color: Gainsboro}
+Arrow_show_time: 1
+Break_between_fix_and_arrow: 1
+Fix_time: 1
+Keys: [lctrl, rctrl]
+Number_of_experiment_blocks: 1
+Number_of_experiment_trials: 4
+Number_of_training_trials: 4
+Observer: Mis
+Ophthalmic_procedure: true
+Percent_of_trials_with_stop: 25
+Resp_time: 1
+Rest_time: 1
+Rest_time_jitter: 1
+Screen_color: Gainsboro
+Start_wait_to_stop: 1
+Stop_show_time: 1
+Text_size: 70

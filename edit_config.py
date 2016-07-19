@@ -47,6 +47,8 @@ def main():
     parser.add_argument('Text_size', default=70, action='store', type=int, help='Number')
     parser.add_argument('Fix_time', default=1, action='store', type=int, help='Number')
     parser.add_argument('Break_between_fix_and_arrow', default=1, action='store', type=int, help='Number')
+    parser.add_argument('Rest_time', default=1, action='store', type=int, help='Number')
+    parser.add_argument('Rest_time_jitter', default=1, action='store', type=int, help='Number')
 
     parser.add_argument('Screen_color', default='Gainsboro', action='store', help='screen_color')
 
@@ -56,6 +58,7 @@ def main():
     args = parser.parse_args()
 
     args_dict = args_to_dict(args)
+    args_dict['Keys'] = ['lctrl', 'rctrl']
 
     with open("docs/config.yaml", 'w') as save_file:
         save_file.write(yaml.dump(args_dict))

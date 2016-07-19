@@ -25,7 +25,6 @@ def run():
 
     # screen
     win, screen_res, frames_per_sec = create_win(screen_color=config['Screen_color'])
-    fixation_cross = visual.TextStim(win, color='black', text='+', height=2 * config['Text_size'])
 
     # prepare experiment
     stops = load_data(win=win, folder_name="stops")
@@ -48,17 +47,10 @@ def run():
               screen_width=screen_res['width'])
 
     # Training
-    show(training_block)
-
-    # After training
-    show_info(win=win, file_name=os.path.join('messages', 'training_end.txt'), text_size=config['Text_size'],
-              screen_width=screen_res['width'])
+    show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec, blocks=training_block)
 
     # Experiment
-    for idx, block in enumerate(experiment_block):
-        show(block)
-        show_info(win=win, file_name=os.path.join('messages', 'break{}.txt'.format(idx+1)), text_size=config['Text_size'],
-                  screen_width=screen_res['width'])
+    # data = show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec, blocks=experiment_block)
 
     # Experiment end
     show_info(win=win, file_name=os.path.join('messages', 'end.txt'), text_size=config['Text_size'],
@@ -68,3 +60,6 @@ run()
 
 # TODO: triggery
 # TODO: wyswietlanie
+# TODO: rysowanie stop
+# TODO: behawiory
+# TODO: loggi

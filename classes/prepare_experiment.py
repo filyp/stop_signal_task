@@ -1,4 +1,5 @@
 import random
+import os
 
 
 def prepare_arrows(arrows, number_of_trials):
@@ -45,10 +46,12 @@ def prepare_stops(stops, number_of_trials, percent_of_trials_with_stop=25):
     return new_stop_table
 
 
-def blocks_creator(arrows_table, stop_table, num):
+def blocks_creator(arrows_table, stop_table, num, breaks):
     assert len(stop_table) == len(arrows_table), "len(stop_table) != len(arrows_table)"
     zipped = [{'arrow': arrow, 'stop': stop} for arrow, stop in zip(arrows_table, stop_table)]
     blocks = [zipped[i:i + len(zipped) / num] for i in range(0, len(zipped), len(zipped) / num)]
+    # add instructions
+    blocks = [{'trials': block, 'text_after_block': text} for block, text in zip(blocks, breaks)]
     return blocks
 
 
@@ -64,7 +67,11 @@ def prepare_trials(number_of_blocks, number_of_experiment_trials, number_of_trai
                                         number_of_trials=number_of_training_trials,
                                         percent_of_trials_with_stop=percent_of_trials_with_stop)
 
-    [training_block] = blocks_creator(arrows_table=training_arrows_table, stop_table=training_stop_table, num=1)
+    text_after_training = [os.path.join('messages', 'training_end.txt')]
+    training_block = blocks_creator(arrows_table=training_arrows_table,
+                                    stop_table=training_stop_table,
+                                    num=1,
+                                    breaks=text_after_training)
 
     # prepare experiment
     experiment_arrows_table = prepare_arrows(arrows=arrows,
@@ -74,8 +81,10 @@ def prepare_trials(number_of_blocks, number_of_experiment_trials, number_of_trai
                                           number_of_trials=number_of_experiment_trials,
                                           percent_of_trials_with_stop=percent_of_trials_with_stop)
 
+    breaks = [os.path.join('messages', 'break{}.txt'.format(idx + 1)) for idx in range(number_of_blocks)]
     experiment_block = blocks_creator(arrows_table=experiment_arrows_table,
                                       stop_table=experiment_stop_table,
-                                      num=number_of_blocks)
+                                      num=number_of_blocks,
+                                      breaks=breaks)
 
     return training_block, experiment_block
