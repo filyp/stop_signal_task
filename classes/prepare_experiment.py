@@ -1,7 +1,8 @@
 import random
 
 
-def prepare_arrows(number_of_arrows_types, number_of_trials):
+def prepare_arrows(arrows, number_of_trials):
+    number_of_arrows_types = len(arrows)
     arrows_table = range(number_of_arrows_types) * (number_of_trials / number_of_arrows_types)
 
     missing_trials = number_of_trials % number_of_arrows_types
@@ -11,10 +12,13 @@ def prepare_arrows(number_of_arrows_types, number_of_trials):
     arrows_table += rest_trials[:missing_trials]
     random.shuffle(arrows_table)
 
+    arrows_table = [arrows[x] for x in arrows_table]
+
     return arrows_table
 
 
-def prepare_stops(number_of_stop_types, number_of_trials, percent_of_trials_with_stop=25):
+def prepare_stops(stops, number_of_trials, percent_of_trials_with_stop=25):
+    number_of_stop_types = len(stops)
     number_of_trials_with_stop = number_of_trials * percent_of_trials_with_stop / 100
     stop_table = range(number_of_stop_types) * (number_of_trials_with_stop / number_of_stop_types)
 
@@ -36,6 +40,8 @@ def prepare_stops(number_of_stop_types, number_of_trials, percent_of_trials_with
         if trial >= 0:
             new_stop_table.append(None)
 
+    new_stop_table = [stops[x] if x is not None else None for x in new_stop_table]
+
     return new_stop_table
 
 
@@ -47,24 +53,24 @@ def blocks_creator(arrows_table, stop_table, num):
 
 
 def prepare_trials(number_of_blocks, number_of_experiment_trials, number_of_training_trials,
-                   number_of_stop_types, percent_of_trials_with_stop, number_of_arrows):
+                   stops, percent_of_trials_with_stop, arrows):
     assert percent_of_trials_with_stop <= 50, "procent stopow nie moze byc wiekszy od 50"
 
     # prepare training
-    training_arrows_table = prepare_arrows(number_of_arrows_types=number_of_arrows,
+    training_arrows_table = prepare_arrows(arrows=arrows,
                                            number_of_trials=number_of_training_trials)
 
-    training_stop_table = prepare_stops(number_of_stop_types=number_of_stop_types,
+    training_stop_table = prepare_stops(stops=stops,
                                         number_of_trials=number_of_training_trials,
                                         percent_of_trials_with_stop=percent_of_trials_with_stop)
 
-    training_block = blocks_creator(arrows_table=training_arrows_table, stop_table=training_stop_table, num=1)
+    [training_block] = blocks_creator(arrows_table=training_arrows_table, stop_table=training_stop_table, num=1)
 
     # prepare experiment
-    experiment_arrows_table = prepare_arrows(number_of_arrows_types=number_of_arrows,
+    experiment_arrows_table = prepare_arrows(arrows=arrows,
                                              number_of_trials=number_of_experiment_trials)
 
-    experiment_stop_table = prepare_stops(number_of_stop_types=number_of_stop_types,
+    experiment_stop_table = prepare_stops(stops=stops,
                                           number_of_trials=number_of_experiment_trials,
                                           percent_of_trials_with_stop=percent_of_trials_with_stop)
 
@@ -73,5 +79,3 @@ def prepare_trials(number_of_blocks, number_of_experiment_trials, number_of_trai
                                       num=number_of_blocks)
 
     return training_block, experiment_block
-
-

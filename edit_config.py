@@ -20,10 +20,8 @@ def args_to_dict(args):
             temp = arg_param[1].split('\'')
             temp = [word for word in temp if word is not '']
             args_dict[arg_param[0]] = temp[0]
-            try:
+            if temp[0] in ('True', 'False'):
                 args_dict[arg_param[0]] = bool(args_dict[arg_param[0]])
-            except:
-                pass
     return args_dict
 
 
@@ -35,7 +33,6 @@ def args_to_dict(args):
 def main():
     parser = GooeyParser(description='Create_config')
     parser.add_argument('Observer', action='store', help='Observer id')
-    parser.add_argument('Experiment_type', default='images', choices=['images', 'text', 'sound'], help='Choice')
     parser.add_argument('Number_of_training_trials', default=4, action='store', type=int, help='Number')
     parser.add_argument('Number_of_experiment_blocks', default=1, action='store', type=int, help='Number')
     parser.add_argument('Number_of_experiment_trials', default=4, action='store', type=int, help='Number')
@@ -47,10 +44,11 @@ def main():
     parser.add_argument('Stop_show_time', default=1, action='store', type=int, help='Number')
     parser.add_argument('Resp_time', default=1, action='store', type=int, help='Number')
 
+    parser.add_argument('Text_size', default=70, action='store', type=int, help='Number')
     parser.add_argument('Fix_time', default=1, action='store', type=int, help='Number')
     parser.add_argument('Break_between_fix_and_arrow', default=1, action='store', type=int, help='Number')
 
-    parser.add_argument('screen_color', default='Gainsboro', action='store', help='screen_color')
+    parser.add_argument('Screen_color', default='Gainsboro', action='store', help='screen_color')
 
     parser.add_argument('Ophthalmic_procedure', default='True', choices=['True', 'False'], help='Choice')
 
