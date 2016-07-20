@@ -12,7 +12,7 @@ import os
 
 import cgitb
 
-# cgitb.enable(format="text")
+#cgitb.enable(format="text")
 
 __author__ = 'ociepkam'
 
@@ -64,4 +64,3 @@ run()
 # TODO: triggery
 # TODO: behawiory
 # TODO: loggi
-# TODO: dzwiek nie dziala

@@ -4,10 +4,10 @@ Fix_time: 1
 Keys: [lctrl, rctrl]
 Number_of_experiment_blocks: 1
 Number_of_experiment_trials: 4
-Number_of_training_trials: 4
+Number_of_training_trials: 10
 Observer: Mis
 Ophthalmic_procedure: false
-Percent_of_trials_with_stop: 25
+Percent_of_trials_with_stop: 50
 Possible_wait_to_stop: [0.5, 1, 1.5, 2]
 Resp_time: 1
 Rest_time: 1

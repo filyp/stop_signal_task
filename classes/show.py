@@ -1,6 +1,7 @@
 from psychopy import visual, event, core
 import time
 import random
+import pygame
 
 from classes.load_data import read_text_from_file
 from classes.check_exit import check_exit
@@ -24,6 +25,7 @@ def show_info(win, file_name, text_size, screen_width, insert=''):
     hello_msg.draw()
     win.flip()
     key = event.waitKeys(keyList=['f7', 'return', 'space'])
+    print key
     if key == ['f7']:
         exit(0)
     win.flip()
@@ -69,11 +71,14 @@ def draw_text(win, text, show_time, resp_clock, text_size, screen_res, keys):
 
 
 def draw_sound(win, sound, show_time, resp_clock, keys):
-    sound[2].play()
+    pygame.init()
+    pygame.mixer.music.load(sound[2])
+    pygame.mixer.music.play()
     # TRIGGER
     reaction_time, response = reaction_loop(win=win, show_time=show_time, keys=keys,
                                             resp_clock=resp_clock)
-    sound[2].stop()
+    pygame.mixer.music.stop()
+    pygame.quit()
     win.flip()
     return reaction_time, response
 
@@ -99,14 +104,13 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
     fixation = visual.TextStim(win, color='black', text='+', height=2 * config['Text_size'])
 
     arrow_show_time = config['Arrow_show_time'] * frames_per_sec
-    stop_show_time = config['Stop_show_time'] * frames_per_sec
+    stop_show_time = config['Stop_show_time'] * frames_per_sec - 1
 
     data = list()
     resp_clock = core.Clock()
 
     for block in blocks:
         for trial in block['trials']:
-            print stops_times
             # draw fixation
             #
             resp_time = (config['Arrow_show_time'] - config['Resp_time']) * frames_per_sec
@@ -125,7 +129,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
             reaction_time, response = draw_stimulus(win=win, stimulus=trial['arrow'], show_time=arrow_show_time,
                                                     resp_clock=resp_clock, text_size=config['Text_size'],
                                                     screen_res=screen_res, keys=config['Keys'])
-
+            print "arrow", resp_clock.getTime()
             # stop
             #
             if trial['stop'] is not None:
@@ -133,10 +137,9 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
                 stop_wait_time = stops_times[trial['stop'][1]] * frames_per_sec
                 reaction_time_2, response_2 = reaction_loop(win=win, show_time=stop_wait_time, keys=config['Keys'],
                                                             resp_clock=resp_clock)
-
+                print 'break', resp_clock.getTime()
                 # draw stop
-                print trial['stop'][1]
-                reaction_time_3, response_3 = draw_stimulus(win=win, stimulus=trial['stop'], show_time=stop_show_time,
+                reaction_time_3, response_3 = draw_stimulus(win=win, stimulus=trial['stop'], show_time=stop_show_time-1,
                                                             resp_clock=resp_clock, text_size=config['Text_size'],
                                                             screen_res=screen_res, keys=config['Keys'])
                 # take firs response
@@ -148,19 +151,21 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
                         if response is None:
                             resp_time = resp_time - stop_wait_time - stop_show_time
 
-                print "stop", resp_clock.getTime()
+                print "stop", resp_clock.getTime(), trial['stop'][1]
 
             # Wait for response
             #
             if response is None:
                 reaction_time, response = reaction_loop(win=win, show_time=resp_time, keys=config['Keys'],
                                                         resp_clock=resp_clock)
+                print "resp", resp_clock.getTime()
 
             # rest
             #
             jitter = random.random() * config['Rest_time_jitter'] * 2 - config['Rest_time_jitter']
             time.sleep(config['Rest_time'] + jitter)
             win.flip()
+            print "rest", resp_clock.getTime()
 
             # add data
             #

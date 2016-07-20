@@ -1,6 +1,5 @@
 import os
 from psychopy import visual
-import pyglet
 import codecs
 from os.path import join
 import yaml
@@ -38,8 +37,7 @@ def load_data(win, folder_name):
                 image = visual.ImageStim(win, image=path, interpolate=True)
                 data.append(('image', name.split('.')[0], image))
             elif name[-3:] in possible_audio_format:
-                music = pyglet.resource.media(os.path.join(folder_name, name), streaming=False)
-                data.append(('sound', name.split('.')[0], music))
+                data.append(('sound', name.split('.')[0], path))
             else:
                 raise Exception('Error while loading a file ' + name)
         except:
