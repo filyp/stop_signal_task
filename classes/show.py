@@ -6,6 +6,8 @@ import pygame
 from classes.load_data import read_text_from_file
 from classes.check_exit import check_exit
 
+TRIGGERS = list()
+
 
 def show_info(win, file_name, text_size, screen_width, insert=''):
     """
@@ -25,7 +27,6 @@ def show_info(win, file_name, text_size, screen_width, insert=''):
     hello_msg.draw()
     win.flip()
     key = event.waitKeys(keyList=['f7', 'return', 'space'])
-    print key
     if key == ['f7']:
         exit(0)
     win.flip()
@@ -37,11 +38,11 @@ def reaction_loop(win, show_time, keys, resp_clock):
     for _ in range(show_time):
         check_exit()
         win.flip()
-        keys = event.getKeys(keyList=keys)
-        if keys:
+        key = event.getKeys(keyList=keys)
+        if key:
             reaction_time = resp_clock.getTime()
             # TRIGGER
-            response = keys[0]
+            response = key[0]
             break
     return reaction_time, response
 
@@ -191,4 +192,4 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
         show_info(win=win, file_name=block['text_after_block'], text_size=config['Text_size'],
                   screen_width=screen_res['width'])
 
-    return data
+    return data, TRIGGERS

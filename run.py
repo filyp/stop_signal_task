@@ -13,7 +13,7 @@ import os
 
 import cgitb
 
-#cgitb.enable(format="text")
+# cgitb.enable(format="text")
 
 __author__ = 'ociepkam'
 
@@ -44,19 +44,22 @@ def run():
         ophthalmic_procedure(win=win, send_triggers=False, screen_res=screen_res, frames_per_sec=frames_per_sec)
 
     # Instruction
-    show_info(win=win, file_name=os.path.join('messages', 'instruction.txt'), text_size=config['Text_size'],
-              screen_width=screen_res['width'])
+    instructions = sorted([f for f in os.listdir('messages') if f.startswith('instruction')])
+    for instruction in instructions:
+        show_info(win=win, file_name=os.path.join('messages', instruction), text_size=config['Text_size'],
+                  screen_width=screen_res['width'])
 
     # Training
     # show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec, blocks=training_block,
     #     stops_times=stops_times)
 
     # Experiment
-    beh = show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec, blocks=experiment_block,
-                stops_times=stops_times)
+    beh, triggers = show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
+                         blocks=experiment_block, stops_times=stops_times)
 
     # Save data
-    save_beh(data=beh, name=part_id)
+    # save_beh(data=beh, name=part_id)
+    # save_triggers(data=triggers, name=part_id)
 
     # Experiment end
     show_info(win=win, file_name=os.path.join('messages', 'end.txt'), text_size=config['Text_size'],
@@ -65,6 +68,8 @@ def run():
 
 run()
 
+# TODO: weryfikacja configu
+# TODO: edit_config bez Gooey
 # TODO: triggery
 # TODO: loggi
-# TODO: wiecej odpowiedzi
+# TODO: informacje w przerwach
