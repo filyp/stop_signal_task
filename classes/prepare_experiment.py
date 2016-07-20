@@ -29,12 +29,12 @@ def prepare_stops(stops, number_of_trials, percent_of_trials_with_stop=25):
 
     stop_table += rest_trials[:missing_trials]
 
-    # -1 w stop_table oznacza trial bez stopa
+    # create trials without stops
     trials_without_stop = [None] * (number_of_trials - 2 * len(stop_table))
     stop_table += trials_without_stop
     random.shuffle(stop_table)
 
-    # zapewnienie, ze nie bedzie dwoch stopow pod rzad
+    # removing trials with stops with are one by one
     new_stop_table = []
     for trial in stop_table:
         new_stop_table.append(trial)
@@ -88,3 +88,10 @@ def prepare_trials(number_of_blocks, number_of_experiment_trials, number_of_trai
                                       breaks=breaks)
 
     return training_block, experiment_block
+
+
+def create_stops_times_dict(stops, start_wait_to_stop):
+    stops_times = dict()
+    for stop in stops:
+        stops_times[stop[1]] = start_wait_to_stop
+    return stops_times

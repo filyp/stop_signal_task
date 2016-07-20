@@ -20,8 +20,10 @@ def args_to_dict(args):
             temp = arg_param[1].split('\'')
             temp = [word for word in temp if word is not '']
             args_dict[arg_param[0]] = temp[0]
-            if temp[0] in ('True', 'False'):
-                args_dict[arg_param[0]] = bool(args_dict[arg_param[0]])
+            if temp[0] == 'True':
+                args_dict[arg_param[0]] = True
+            elif temp[0] == 'False':
+                args_dict[arg_param[0]] = False
     return args_dict
 
 
@@ -44,7 +46,7 @@ def main():
     parser.add_argument('Stop_show_time', default=1, action='store', type=int, help='Number')
     parser.add_argument('Resp_time', default=1, action='store', type=int, help='Number')
 
-    parser.add_argument('Text_size', default=70, action='store', type=int, help='Number')
+    parser.add_argument('Text_size', default=40, action='store', type=int, help='Number')
     parser.add_argument('Fix_time', default=1, action='store', type=int, help='Number')
     parser.add_argument('Break_between_fix_and_arrow', default=1, action='store', type=int, help='Number')
     parser.add_argument('Rest_time', default=1, action='store', type=int, help='Number')
@@ -54,11 +56,11 @@ def main():
 
     parser.add_argument('Ophthalmic_procedure', default='True', choices=['True', 'False'], help='Choice')
 
-
     args = parser.parse_args()
 
     args_dict = args_to_dict(args)
     args_dict['Keys'] = ['lctrl', 'rctrl']
+    args_dict['Possible_wait_to_stop'] = [args_dict['Start_wait_to_stop']]
 
     with open("docs/config.yaml", 'w') as save_file:
         save_file.write(yaml.dump(args_dict))

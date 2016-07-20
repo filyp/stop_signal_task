@@ -6,7 +6,7 @@ from os.path import join
 import yaml
 
 possible_images_format = ('bmp', 'jpg', 'png')
-possible_audio_format = ('mp3')
+possible_audio_format = ('mp3', 'au', 'mp2', 'wav', 'wma', 'ogg')
 
 
 def load_config():
@@ -38,7 +38,7 @@ def load_data(win, folder_name):
                 image = visual.ImageStim(win, image=path, interpolate=True)
                 data.append(('image', name.split('.')[0], image))
             elif name[-3:] in possible_audio_format:
-                music = pyglet.resource.media(os.path.join(folder_name, name))
+                music = pyglet.resource.media(os.path.join(folder_name, name), streaming=False)
                 data.append(('sound', name.split('.')[0], music))
             else:
                 raise Exception('Error while loading a file ' + name)

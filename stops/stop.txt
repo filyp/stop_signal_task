@@ -1,2 +1,2 @@
-1:run
-2:sst
+run:run
+sst:sst
