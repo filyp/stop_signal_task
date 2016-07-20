@@ -107,6 +107,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
     stop_show_time = config['Stop_show_time'] * frames_per_sec - 1
 
     data = list()
+    idx = 1
     resp_clock = core.Clock()
 
     for block in blocks:
@@ -139,7 +140,8 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
                                                             resp_clock=resp_clock)
                 print 'break', resp_clock.getTime()
                 # draw stop
-                reaction_time_3, response_3 = draw_stimulus(win=win, stimulus=trial['stop'], show_time=stop_show_time-1,
+                reaction_time_3, response_3 = draw_stimulus(win=win, stimulus=trial['stop'],
+                                                            show_time=stop_show_time - 1,
                                                             resp_clock=resp_clock, text_size=config['Text_size'],
                                                             screen_res=screen_res, keys=config['Keys'])
                 # take firs response
@@ -169,17 +171,22 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
 
             # add data
             #
-            data.append([trial['arrow'][1], reaction_time, response])
-
+            if trial['stop'] is not None:
+                data.append({'Nr': idx, 'GO_name': trial['arrow'][1], 'RE_name': response, 'RE_time': reaction_time,
+                             'ST_name': trial['stop'][1], 'ST_wait_time': stops_times[trial['stop'][1]]})
+            else:
+                data.append({'Nr': idx, 'GO_name': trial['arrow'][1], 'RE_name': response, 'RE_time': reaction_time,
+                             'ST_name': None, 'ST_wait_time': None})
+            idx += 1
             # update stops_times
             if trial['stop'] is not None:
                 wait_time_index = config['Possible_wait_to_stop'].index(stops_times[trial['stop'][1]])
                 if response is None:
                     if wait_time_index != len(config['Possible_wait_to_stop']) - 1:
-                        stops_times[trial['stop'][1]] = config['Possible_wait_to_stop'][wait_time_index+1]
+                        stops_times[trial['stop'][1]] = config['Possible_wait_to_stop'][wait_time_index + 1]
                 else:
                     if wait_time_index != 0:
-                        stops_times[trial['stop'][1]] = config['Possible_wait_to_stop'][wait_time_index-1]
+                        stops_times[trial['stop'][1]] = config['Possible_wait_to_stop'][wait_time_index - 1]
 
         show_info(win=win, file_name=block['text_after_block'], text_size=config['Text_size'],
                   screen_width=screen_res['width'])

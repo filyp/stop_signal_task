@@ -7,6 +7,7 @@ from classes.screen import create_win
 from classes.experiment_info import experiment_info
 from classes.ophthalmic_procedure import ophthalmic_procedure
 from classes.show import show_info, show
+from classes.save_data import save_beh, save_triggers
 
 import os
 
@@ -20,7 +21,7 @@ __author__ = 'ociepkam'
 def run():
     # Prepare experiment
     config = load_config()
-    part_id, observer_id, date = experiment_info(config['Observer'])
+    part_id, sex, age, observer_id, date = experiment_info(config['Observer'])
 
     # screen
     win, screen_res, frames_per_sec = create_win(screen_color=config['Screen_color'])
@@ -47,12 +48,15 @@ def run():
               screen_width=screen_res['width'])
 
     # Training
-    show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec, blocks=training_block,
-         stops_times=stops_times)
+    # show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec, blocks=training_block,
+    #     stops_times=stops_times)
 
     # Experiment
-    # data = show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec, blocks=experiment_block,
-    #             stops_times=stops_times)
+    beh = show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec, blocks=experiment_block,
+                stops_times=stops_times)
+
+    # Save data
+    save_beh(data=beh, name=part_id)
 
     # Experiment end
     show_info(win=win, file_name=os.path.join('messages', 'end.txt'), text_size=config['Text_size'],
@@ -62,5 +66,5 @@ def run():
 run()
 
 # TODO: triggery
-# TODO: behawiory
 # TODO: loggi
+# TODO: wiecej odpowiedzi

@@ -25,7 +25,5 @@ def experiment_info(observer):
     if not my_dlg.OK:
         exit(1)
 
-    # id + sex + age
-    part_id = my_dlg.data[0] + my_dlg.data[2] + my_dlg.data[1]
-
-    return part_id, my_dlg.data[3], date
+    #          id               sex             age          observer
+    return my_dlg.data[0], my_dlg.data[2], my_dlg.data[1], my_dlg.data[3], date
