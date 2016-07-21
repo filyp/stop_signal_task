@@ -8,9 +8,9 @@ from classes.experiment_info import experiment_info
 from classes.ophthalmic_procedure import ophthalmic_procedure
 from classes.show import show_info, show
 from classes.save_data import save_beh, save_triggers
+from classes.triggers import create_eeg_port, create_nirs_dev
 
 import os
-import parallel
 
 # import cgitb
 # cgitb.enable(format="text")
@@ -25,8 +25,9 @@ def run():
 
     # EEG triggers
     if config['Send_EEG_trigg']:
-        port = parallel.Parallel()
-        port.setData(0x00)
+        port = create_eeg_port()
+    elif config['Send_Nirs_trigg']:
+        port = create_nirs_dev()
     else:
         port = None
     triggers_list = list()
@@ -80,8 +81,7 @@ def run():
 
 run()
 
-# TODO: ustalic jak maja wygladac triggery EEG
-# TODO: triggery_nirs - windows
+# TODO: ustalic jak ma wygladac mapowanie triggerow
 # TODO: loggi
 # TODO: informacje w przerwach
 
