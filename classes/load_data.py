@@ -14,9 +14,11 @@ def load_config():
     return doc
 
 
-def load_data(win, folder_name):
+def load_data(win, folder_name, config, screen_res):
     """
     ladowanie tekstu, zdjec i dzwiekow
+    :param screen_res:
+    :param config:
     :param win: visual.Window z psychopy
     :param folder_name: nazwa folderu z ktorego beda ladowane pliki
     """
@@ -32,7 +34,10 @@ def load_data(win, folder_name):
                         trigger_name = line.split(':')[0]
                         text = line.split(':')[1]
                         text = text.split('\n')[0]
-                        data.append(('text', trigger_name, text))
+                        word = visual.TextStim(win=win, antialias=True, font=u'Arial', text=text,
+                                               height=config['Text_size'], wrapWidth=screen_res['width'],
+                                               color=u'black', alignHoriz='center', alignVert='center')
+                        data.append(('text', trigger_name, word))
             elif name[-3:] in possible_images_format:
                 image = visual.ImageStim(win, image=path, interpolate=True)
                 data.append(('image', name.split('.')[0], image))

@@ -32,21 +32,6 @@ def show_info(win, file_name, text_size, screen_width, insert=''):
     win.flip()
 
 
-def reaction_loop(win, show_time, keys, resp_clock):
-    reaction_time = None
-    response = None
-    for _ in range(show_time):
-        check_exit()
-        win.flip()
-        key = event.getKeys(keyList=keys)
-        if key:
-            reaction_time = resp_clock.getTime()
-            # TRIGGER
-            response = key[0]
-            break
-    return reaction_time, response
-
-
 def draw_fixation(win, fixation, config):
     fixation.setAutoDraw(True)
     win.flip()
@@ -56,56 +41,69 @@ def draw_fixation(win, fixation, config):
     win.flip()
 
 
-def draw_image(win, image, show_time, resp_clock, keys):
-    image[2].setAutoDraw(True)
-    # TRIGGER
-    reaction_time, response = reaction_loop(win=win, show_time=show_time, keys=keys,
-                                            resp_clock=resp_clock)
-    image[2].setAutoDraw(False)
-    win.flip()
-    return reaction_time, response
+def start_stimulus(stimulus):
+    if stimulus[0] == 'image':
+        stimulus[2].setAutoDraw(True)
+
+    elif stimulus[0] == 'text':
+        stimulus[2].setAutoDraw(True)
+
+    elif stimulus[0] == 'sound':
+        pygame.init()
+        pygame.mixer.music.load(stimulus[2])
+        pygame.mixer.music.play()
+    else:
+        raise Exception("Problems with start stimulus " + stimulus)
 
 
-def draw_text(win, text, show_time, resp_clock, text_size, screen_res, keys):
-    word = visual.TextStim(win=win, antialias=True, font=u'Arial',
-                           text=text[2], height=text_size,
-                           wrapWidth=screen_res['width'], color=u'black',
-                           alignHoriz='center', alignVert='center')
-    word.setAutoDraw(True)
-    # TRIGGER
-    reaction_time, response = reaction_loop(win=win, show_time=show_time, keys=keys,
-                                            resp_clock=resp_clock)
-    word.setAutoDraw(False)
-    win.flip()
-    return reaction_time, response
+def stop_stimulus(stimulus):
+    if stimulus[0] == 'image':
+        stimulus[2].setAutoDraw(False)
+
+    elif stimulus[0] == 'text':
+        stimulus[2].setAutoDraw(False)
+
+    elif stimulus[0] == 'sound':
+        pygame.mixer.music.stop()
+        pygame.quit()
+    else:
+        raise Exception("Problems with stop stimulus " + stimulus)
 
 
-def draw_sound(win, sound, show_time, resp_clock, keys):
-    pygame.init()
-    pygame.mixer.music.load(sound[2])
-    pygame.mixer.music.play()
-    # TRIGGER
-    reaction_time, response = reaction_loop(win=win, show_time=show_time, keys=keys,
-                                            resp_clock=resp_clock)
-    pygame.mixer.music.stop()
-    pygame.quit()
-    win.flip()
-    return reaction_time, response
-
-
-def draw_stimulus(win, stimulus, show_time, resp_clock, text_size, screen_res, keys):
+def new_run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end, stop_show_start, config):
     reaction_time = None
     response = None
 
-    if stimulus[0] == 'image':
-        reaction_time, response = draw_image(win=win, image=stimulus, show_time=show_time, resp_clock=resp_clock,
-                                             keys=keys)
-    elif stimulus[0] == 'text':
-        reaction_time, response = draw_text(win=win, text=stimulus, show_time=show_time, resp_clock=resp_clock,
-                                            text_size=text_size, screen_res=screen_res, keys=keys)
-    elif stimulus[0] == 'sound':
-        reaction_time, response = draw_sound(win=win, sound=stimulus, show_time=show_time, resp_clock=resp_clock,
-                                             keys=keys)
+    start_stimulus(stimulus=trial['arrow'])
+    check_exit()
+    win.flip()
+
+    event.clearEvents()
+    win.callOnFlip(resp_clock.reset)
+
+    for frame_idx in range(resp_time):
+        if frame_idx == arrow_show_time:
+            stop_stimulus(stimulus=trial['arrow'])
+        if trial['stop'] is not None:
+            if frame_idx == stop_show_start:
+                start_stimulus(stimulus=trial['stop'])
+            if frame_idx == stop_show_end:
+                stop_stimulus(stimulus=trial['stop'])
+
+        key = event.getKeys(keyList=config['Keys'])
+        if key:
+            reaction_time = resp_clock.getTime()
+            # TRIGGER
+            response = key[0]
+            break
+        check_exit()
+        win.flip()
+
+    stop_stimulus(stimulus=trial['arrow'])
+    try:
+        stop_stimulus(stimulus=trial['stop'])
+    except:
+        pass
 
     return reaction_time, response
 
@@ -125,8 +123,8 @@ def update_stops_times(trial, config, response, stops_times):
 def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
     fixation = visual.TextStim(win, color='black', text='+', height=2 * config['Text_size'])
 
-    arrow_show_time = config['Arrow_show_time'] * frames_per_sec
-    stop_show_time = config['Stop_show_time'] * frames_per_sec - 1
+    arrow_show_time = int(round(config['Arrow_show_time'] * frames_per_sec))
+    resp_time = int(round(config['Resp_time'] * frames_per_sec))
 
     data = list()
     trial_number = 1
@@ -134,7 +132,12 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
 
     for block in blocks:
         for trial in block['trials']:
-            resp_time = (config['Resp_time'] - config['Arrow_show_time']) * frames_per_sec
+            if trial['stop'] is not None:
+                stop_show_start = int(round(stops_times[trial['stop'][1]] * frames_per_sec))
+                stop_show_end = int(round(stop_show_start + config['Stop_show_time'] * frames_per_sec))
+            else:
+                stop_show_start = None
+                stop_show_end = None
 
             # draw fixation
             draw_fixation(win=win, fixation=fixation, config=config)
@@ -143,49 +146,16 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
             time.sleep(config['Break_between_fix_and_arrow'])
             check_exit()
 
-            event.clearEvents()
-
-            # draw arrow
-            #
-            win.callOnFlip(resp_clock.reset)
-            reaction_time, response = draw_stimulus(win=win, stimulus=trial['arrow'], show_time=arrow_show_time,
-                                                    resp_clock=resp_clock, text_size=config['Text_size'],
-                                                    screen_res=screen_res, keys=config['Keys'])
-            # stop
-            #
-            if trial['stop'] is not None:
-                # break
-                stop_wait_time = stops_times[trial['stop'][1]] * frames_per_sec
-                reaction_time_2, response_2 = reaction_loop(win=win, show_time=stop_wait_time, keys=config['Keys'],
-                                                            resp_clock=resp_clock)
-
-                # draw stop
-                reaction_time_3, response_3 = draw_stimulus(win=win, stimulus=trial['stop'],
-                                                            show_time=stop_show_time - 1,
-                                                            resp_clock=resp_clock, text_size=config['Text_size'],
-                                                            screen_res=screen_res, keys=config['Keys'])
-                # take firs response
-                if response is None:
-                    reaction_time, response = reaction_time_2, response_2
-                    if response is None:
-                        reaction_time, response = reaction_time_3, response_3
-                        # there was no response - compute rest response time
-                        if response is None:
-                            resp_time = resp_time - stop_show_time - stop_wait_time
-
-            # Wait for response
-            #
-            if response is None:
-                reaction_time, response = reaction_loop(win=win, show_time=resp_time, keys=config['Keys'],
-                                                        resp_clock=resp_clock)
+            # arrow, stop and resp
+            reaction_time, response = new_run_trial(win=win, resp_clock=resp_clock, trial=trial, resp_time=resp_time,
+                                                    arrow_show_time=arrow_show_time, stop_show_end=stop_show_end,
+                                                    stop_show_start=stop_show_start, config=config)
 
             # rest
-            #
             jitter = (2 * random.random() - 1) * config['Rest_time_jitter']
             time.sleep(config['Rest_time'] + jitter)
 
             # add data
-            #
             if trial['stop'] is not None:
                 data.append({'Nr': trial_number, 'GO_name': trial['arrow'][1], 'RE_name': response,
                              'RE_time': reaction_time, 'ST_name': trial['stop'][1],

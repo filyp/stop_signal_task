@@ -27,8 +27,8 @@ def run():
     win, screen_res, frames_per_sec = create_win(screen_color=config['Screen_color'])
 
     # prepare experiment
-    stops = load_data(win=win, folder_name="stops")
-    arrows = load_data(win=win, folder_name="arrows")
+    stops = load_data(win=win, folder_name="stops", config=config, screen_res=screen_res)
+    arrows = load_data(win=win, folder_name="arrows", config=config, screen_res=screen_res)
 
     training_block, experiment_block = prepare_trials(number_of_blocks=config['Number_of_experiment_blocks'],
                                                       number_of_experiment_trials=config['Number_of_experiment_trials'],
