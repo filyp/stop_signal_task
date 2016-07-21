@@ -44,20 +44,17 @@ def draw_fixation(win, fixation, config):
     win.flip()
 
 
-def start_stimulus(win, stimulus, trigger_type, send_eeg_triggers):
+def start_stimulus(win, stimulus, send_eeg_triggers):
     global TRIGGER_NO, TRIGGERS_LIST
     if stimulus[0] == 'image':
         stimulus[2].setAutoDraw(True)
-        TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=trigger_type, trigger_no=TRIGGER_NO,
-                                                    triggers_list=TRIGGERS_LIST)
+
         win.flip()
         if send_eeg_triggers:
             send_trigger(port=PORT, trigger_no=TRIGGER_NO)
 
     elif stimulus[0] == 'text':
         stimulus[2].setAutoDraw(True)
-        TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=trigger_type, trigger_no=TRIGGER_NO,
-                                                    triggers_list=TRIGGERS_LIST)
         win.flip()
         if send_eeg_triggers:
             send_trigger(port=PORT, trigger_no=TRIGGER_NO)
@@ -65,8 +62,6 @@ def start_stimulus(win, stimulus, trigger_type, send_eeg_triggers):
     elif stimulus[0] == 'sound':
         pygame.init()
         pygame.mixer.music.load(stimulus[2])
-        TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=trigger_type, trigger_no=TRIGGER_NO,
-                                                    triggers_list=TRIGGERS_LIST)
         win.flip()
         pygame.mixer.music.play()
         if send_eeg_triggers:
@@ -93,9 +88,9 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
     global PORT, TRIGGER_NO, TRIGGERS_LIST
     reaction_time = None
     response = None
-
-    start_stimulus(win=win, stimulus=trial['arrow'], trigger_type=TriggerTypes.GO,
-                   send_eeg_triggers=config['Send_EEG_trigg'])
+    TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.GO, trigger_no=TRIGGER_NO,
+                                                triggers_list=TRIGGERS_LIST)
+    start_stimulus(win=win, stimulus=trial['arrow'], send_eeg_triggers=config['Send_EEG_trigg'])
     check_exit()
     arrow_on = True
     stop_on = None
@@ -111,8 +106,9 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
             change = True
         if trial['stop'] is not None:
             if stop_on is None and resp_clock.getTime() > stop_show_start:
-                start_stimulus(win=win, stimulus=trial['stop'], trigger_type=TriggerTypes.ST,
-                               send_eeg_triggers=config['Send_EEG_trigg'])
+                TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.ST, trigger_no=TRIGGER_NO,
+                                                            triggers_list=TRIGGERS_LIST)
+                start_stimulus(win=win, stimulus=trial['stop'], send_eeg_triggers=config['Send_EEG_trigg'])
                 stop_on = True
                 change = True
             if stop_on is True and resp_clock.getTime() > stop_show_end:
@@ -123,9 +119,9 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
         key = event.getKeys(keyList=config['Keys'])
         if key:
             reaction_time = resp_clock.getTime()
+            TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.RE, trigger_no=TRIGGER_NO,
+                                                        triggers_list=TRIGGERS_LIST)
             if config['Send_EEG_trigg']:
-                TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.RE, trigger_no=TRIGGER_NO,
-                                                            triggers_list=TRIGGERS_LIST)
                 send_trigger(port=PORT, trigger_no=TRIGGER_NO)
             response = key[0]
             break

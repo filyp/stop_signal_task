@@ -1,5 +1,4 @@
 from psychopy import visual, logging
-import time
 import os
 
 from classes.load_data import read_text_from_file
