@@ -171,7 +171,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
                         reaction_time, response = reaction_time_3, response_3
                         # there was no response - compute rest response time
                         if response is None:
-                            resp_time = config['Resp_time'] * frames_per_sec - stop_show_time
+                            resp_time = resp_time - stop_show_time - stop_wait_time
 
             # Wait for response
             #
