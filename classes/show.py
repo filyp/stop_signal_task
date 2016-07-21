@@ -47,6 +47,15 @@ def reaction_loop(win, show_time, keys, resp_clock):
     return reaction_time, response
 
 
+def draw_fixation(win, fixation, config):
+    fixation.setAutoDraw(True)
+    win.flip()
+    time.sleep(config['Fix_time'])
+    fixation.setAutoDraw(False)
+    check_exit()
+    win.flip()
+
+
 def draw_image(win, image, show_time, resp_clock, keys):
     image[2].setAutoDraw(True)
     # TRIGGER
@@ -101,6 +110,18 @@ def draw_stimulus(win, stimulus, show_time, resp_clock, text_size, screen_res, k
     return reaction_time, response
 
 
+def update_stops_times(trial, config, response, stops_times):
+    if trial['stop'] is not None:
+        wait_time_index = config['Possible_wait_to_stop'].index(stops_times[trial['stop'][1]])
+        if response is None:
+            if wait_time_index != len(config['Possible_wait_to_stop']) - 1:
+                stops_times[trial['stop'][1]] = config['Possible_wait_to_stop'][wait_time_index + 1]
+        else:
+            if wait_time_index != 0:
+                stops_times[trial['stop'][1]] = config['Possible_wait_to_stop'][wait_time_index - 1]
+    return stops_times
+
+
 def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
     fixation = visual.TextStim(win, color='black', text='+', height=2 * config['Text_size'])
 
@@ -108,21 +129,20 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
     stop_show_time = config['Stop_show_time'] * frames_per_sec - 1
 
     data = list()
-    idx = 1
+    trial_number = 1
     resp_clock = core.Clock()
 
     for block in blocks:
         for trial in block['trials']:
-            # draw fixation
-            #
             resp_time = (config['Resp_time'] - config['Arrow_show_time']) * frames_per_sec
-            fixation.setAutoDraw(True)
-            win.flip()
-            time.sleep(config['Fix_time'])
-            fixation.setAutoDraw(False)
-            win.flip()
+
+            # draw fixation
+            draw_fixation(win=win, fixation=fixation, config=config)
+
+            # break between fixation and arrow
             time.sleep(config['Break_between_fix_and_arrow'])
             check_exit()
+
             event.clearEvents()
 
             # draw arrow
@@ -131,7 +151,6 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
             reaction_time, response = draw_stimulus(win=win, stimulus=trial['arrow'], show_time=arrow_show_time,
                                                     resp_clock=resp_clock, text_size=config['Text_size'],
                                                     screen_res=screen_res, keys=config['Keys'])
-            print "arrow", resp_clock.getTime()
             # stop
             #
             if trial['stop'] is not None:
@@ -139,7 +158,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
                 stop_wait_time = stops_times[trial['stop'][1]] * frames_per_sec
                 reaction_time_2, response_2 = reaction_loop(win=win, show_time=stop_wait_time, keys=config['Keys'],
                                                             resp_clock=resp_clock)
-                print 'break', resp_clock.getTime()
+
                 # draw stop
                 reaction_time_3, response_3 = draw_stimulus(win=win, stimulus=trial['stop'],
                                                             show_time=stop_show_time - 1,
@@ -154,40 +173,30 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
                         if response is None:
                             resp_time = config['Resp_time'] * frames_per_sec - stop_show_time
 
-                print "stop", resp_clock.getTime(), trial['stop'][1]
-
             # Wait for response
             #
             if response is None:
                 reaction_time, response = reaction_loop(win=win, show_time=resp_time, keys=config['Keys'],
                                                         resp_clock=resp_clock)
-                print "resp", resp_clock.getTime()
 
             # rest
             #
-            jitter = random.random() * config['Rest_time_jitter'] * 2 - config['Rest_time_jitter']
+            jitter = (2 * random.random() - 1) * config['Rest_time_jitter']
             time.sleep(config['Rest_time'] + jitter)
-            win.flip()
-            print "rest", resp_clock.getTime()
 
             # add data
             #
             if trial['stop'] is not None:
-                data.append({'Nr': idx, 'GO_name': trial['arrow'][1], 'RE_name': response, 'RE_time': reaction_time,
-                             'ST_name': trial['stop'][1], 'ST_wait_time': stops_times[trial['stop'][1]]})
+                data.append({'Nr': trial_number, 'GO_name': trial['arrow'][1], 'RE_name': response,
+                             'RE_time': reaction_time, 'ST_name': trial['stop'][1],
+                             'ST_wait_time': stops_times[trial['stop'][1]]})
             else:
-                data.append({'Nr': idx, 'GO_name': trial['arrow'][1], 'RE_name': response, 'RE_time': reaction_time,
-                             'ST_name': None, 'ST_wait_time': None})
-            idx += 1
+                data.append({'Nr': trial_number, 'GO_name': trial['arrow'][1], 'RE_name': response,
+                             'RE_time': reaction_time, 'ST_name': None, 'ST_wait_time': None})
+            trial_number += 1
+
             # update stops_times
-            if trial['stop'] is not None:
-                wait_time_index = config['Possible_wait_to_stop'].index(stops_times[trial['stop'][1]])
-                if response is None:
-                    if wait_time_index != len(config['Possible_wait_to_stop']) - 1:
-                        stops_times[trial['stop'][1]] = config['Possible_wait_to_stop'][wait_time_index + 1]
-                else:
-                    if wait_time_index != 0:
-                        stops_times[trial['stop'][1]] = config['Possible_wait_to_stop'][wait_time_index - 1]
+            stops_times = update_stops_times(trial=trial, config=config, response=response, stops_times=stops_times)
 
         show_info(win=win, file_name=block['text_after_block'], text_size=config['Text_size'],
                   screen_width=screen_res['width'])
