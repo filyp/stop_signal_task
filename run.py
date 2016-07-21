@@ -62,8 +62,9 @@ def run():
                   screen_width=screen_res['width'])
 
     # Training
-    # show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec, blocks=training_block,
-    #     stops_times=stops_times)
+    show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
+         blocks=training_block, stops_times=stops_times, port=None, trigger_no=trigger_no,
+         triggers_list=triggers_list)
 
     # Experiment
     beh, triggers_list = show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
@@ -82,6 +83,8 @@ def run():
 run()
 
 # TODO: ustalic jak ma wygladac mapowanie triggerow
+# TODO: przetestowac triggery nirsowe
+
 # TODO: loggi
 # TODO: informacje w przerwach
 

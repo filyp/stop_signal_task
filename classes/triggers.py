@@ -45,4 +45,4 @@ def send_trigger(port, trigger_no):
         try:
             port.activate_line(trigger_no)
         except:
-            raise Exception("Can't send trigger")
+            pass
