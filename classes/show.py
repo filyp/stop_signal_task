@@ -115,7 +115,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
         for trial in block['trials']:
             # draw fixation
             #
-            resp_time = (config['Arrow_show_time'] - config['Resp_time']) * frames_per_sec
+            resp_time = (config['Resp_time'] - config['Arrow_show_time']) * frames_per_sec
             fixation.setAutoDraw(True)
             win.flip()
             time.sleep(config['Fix_time'])
@@ -152,7 +152,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
                         reaction_time, response = reaction_time_3, response_3
                         # there was no response - compute rest response time
                         if response is None:
-                            resp_time = resp_time - stop_wait_time - stop_show_time
+                            resp_time = config['Resp_time'] * frames_per_sec - stop_show_time
 
                 print "stop", resp_clock.getTime(), trial['stop'][1]
 

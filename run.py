@@ -68,8 +68,9 @@ def run():
 
 run()
 
-# TODO: weryfikacja configu
-# TODO: edit_config bez Gooey
 # TODO: triggery
 # TODO: loggi
 # TODO: informacje w przerwach
+
+# TODO: weryfikacja configu
+# TODO: edit_config bez Gooey
