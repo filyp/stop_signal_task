@@ -80,9 +80,11 @@ def run():
 
 run()
 
-# TODO: triggery_nirs
+# TODO: ustalic jak maja wygladac triggery EEG
+# TODO: triggery_nirs - windows
 # TODO: loggi
 # TODO: informacje w przerwach
 
 # TODO: weryfikacja configu
-# TODO: edit_config bez Gooey
+
+# TODO: dokumenatcja

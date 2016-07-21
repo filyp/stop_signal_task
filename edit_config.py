@@ -1,72 +1,79 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from gooey import Gooey, GooeyParser
+from psychopy import gui
 import yaml
 
 __author__ = 'ociepkam'
 
-
-def args_to_dict(args):
-
-    args = str(args).split('(')[1][:-1]
-    args_list = args.split(", ")
-    args_dict = {}
-    for arg in args_list:
-        arg_param = arg.split("=")
-        try:
-            args_dict[arg_param[0]] = int(arg_param[1])
-        except:
-            temp = arg_param[1].split('\'')
-            temp = [word for word in temp if word is not '']
-            args_dict[arg_param[0]] = temp[0]
-            if temp[0] == 'True':
-                args_dict[arg_param[0]] = True
-            elif temp[0] == 'False':
-                args_dict[arg_param[0]] = False
-    return args_dict
+CONFIG_KEYS = [
+    # Observer info
+    'Observer',
+    # Experiment length
+    'Number_of_training_trials', 'Number_of_experiment_blocks', 'Number_of_experiment_trials',
+    # Trial info
+    'Arrow_show_time', 'Percent_of_trials_with_stop', 'Start_wait_to_stop', 'Stop_show_time', 'Resp_time',
+    'Rest_time', 'Rest_time_jitter',
+    # Triggers info
+    'Ophthalmic_procedure', 'Send_EEG_trigg', 'Send_Nirs_trigg',
+    # View info
+    'Text_size', 'Fix_time', 'Break_between_fix_and_arrow', 'Screen_color'
+]
 
 
-@Gooey(language='english',  # Translations configurable via json
-       default_size=(550, 500),  # starting size of the GUI
-       required_cols=1,  # number of columns in the "Required" section
-       optional_cols=3,  # number of columns in the "Optional" section
-       )
 def main():
-    parser = GooeyParser(description='Create_config')
-    parser.add_argument('Observer', action='store', help='Observer id')
-    parser.add_argument('Number_of_training_trials', default=4, action='store', type=int, help='Number')
-    parser.add_argument('Number_of_experiment_blocks', default=1, action='store', type=int, help='Number')
-    parser.add_argument('Number_of_experiment_trials', default=4, action='store', type=int, help='Number')
-    parser.add_argument('Percent_of_trials_with_stop', default=25, action='store', type=int, help='Number')
+    my_dlg = gui.Dlg(title="SST - config")
+    my_dlg.addText('Observer info')
+    my_dlg.addField('Observer')
 
-    parser.add_argument('Send_EEG_trigg', default='False', choices=['True', 'False'], help='Choice')
-    parser.add_argument('Send_Nirs_trigg', default='False', choices=['True', 'False'], help='Choice')
+    my_dlg.addText('Experiment length')
+    my_dlg.addField('Number_of_training_trials', 4)
+    my_dlg.addField('Number_of_experiment_blocks', 1)
+    my_dlg.addField('Number_of_experiment_trials', 4)
 
-    parser.add_argument('Arrow_show_time', default=1, action='store', type=int, help='Number')
-    parser.add_argument('Stop_show_time', default=1, action='store', type=int, help='Number')
-    parser.add_argument('Start_wait_to_stop', default=1, action='store', type=int, help='Number')
-    parser.add_argument('Stop_show_time', default=1, action='store', type=int, help='Number')
-    parser.add_argument('Resp_time', default=1, action='store', type=int, help='Number')
+    my_dlg.addText('Trial info')
+    my_dlg.addField('Arrow_show_time', 1)
+    my_dlg.addField('Percent_of_trials_with_stop', 25)
+    my_dlg.addField('Start_wait_to_stop', 1)
+    my_dlg.addField('Stop_show_time', 1)
+    my_dlg.addField('Resp_time', 2)
+    my_dlg.addField('Rest_time', 1)
+    my_dlg.addField('Rest_time_jitter', 1)
 
-    parser.add_argument('Text_size', default=40, action='store', type=int, help='Number')
-    parser.add_argument('Fix_time', default=1, action='store', type=int, help='Number')
-    parser.add_argument('Break_between_fix_and_arrow', default=1, action='store', type=int, help='Number')
-    parser.add_argument('Rest_time', default=1, action='store', type=int, help='Number')
-    parser.add_argument('Rest_time_jitter', default=1, action='store', type=int, help='Number')
+    my_dlg.addText('Triggers info')
+    my_dlg.addField('Ophthalmic_procedure', choices=['False', 'True'])
+    my_dlg.addField('Send_EEG_trigg', choices=['False', 'True'])
+    my_dlg.addField('Send_Nirs_trigg', choices=['False', 'True'])
 
-    parser.add_argument('Screen_color', default='Gainsboro', action='store', help='screen_color')
+    my_dlg.addText('View info')
+    my_dlg.addField('Text_size', 1)
+    my_dlg.addField('Fix_time', 1)
+    my_dlg.addField('Break_between_fix_and_arrow', 1)
+    my_dlg.addField('Screen_color', 1)
 
-    parser.add_argument('Ophthalmic_procedure', default='True', choices=['True', 'False'], help='Choice')
+    my_dlg.show()
+    if not my_dlg.OK:
+        exit(1)
 
-    args = parser.parse_args()
+    if len(CONFIG_KEYS) != len(my_dlg.data):
+        raise Exception("Problems with config")
 
-    args_dict = args_to_dict(args)
+    args_dict = dict()
+    for idx, key in enumerate(CONFIG_KEYS):
+        if isinstance(my_dlg.data[idx], unicode):
+            my_dlg.data[idx] = str(my_dlg.data[idx])
+        if my_dlg.data[idx] == 'False':
+            my_dlg.data[idx] = False
+        elif my_dlg.data[idx] == 'True':
+            my_dlg.data[idx] = True
+        args_dict[key] = my_dlg.data[idx]
+
     args_dict['Keys'] = ['lctrl', 'rctrl']
     args_dict['Possible_wait_to_stop'] = [args_dict['Start_wait_to_stop']]
 
     with open("docs/config.yaml", 'w') as save_file:
         save_file.write(yaml.dump(args_dict))
+
 
 if __name__ == '__main__':
     main()
