@@ -76,19 +76,23 @@ def new_run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_
 
     start_stimulus(stimulus=trial['arrow'])
     check_exit()
-    win.flip()
-
+    arrow_on = True
+    stop_on = None
     event.clearEvents()
     win.callOnFlip(resp_clock.reset)
+    win.flip()
 
-    for frame_idx in range(resp_time):
-        if frame_idx == arrow_show_time:
+    while resp_clock.getTime() < resp_time:
+        if arrow_on is True and resp_clock.getTime() > arrow_show_time:
             stop_stimulus(stimulus=trial['arrow'])
+            arrow_on = False
         if trial['stop'] is not None:
-            if frame_idx == stop_show_start:
+            if stop_on is None and resp_clock.getTime() > stop_show_start:
                 start_stimulus(stimulus=trial['stop'])
-            if frame_idx == stop_show_end:
+                stop_on = True
+            if stop_on is True and resp_clock.getTime() > stop_show_end:
                 stop_stimulus(stimulus=trial['stop'])
+                stop_on = False
 
         key = event.getKeys(keyList=config['Keys'])
         if key:
@@ -99,11 +103,10 @@ def new_run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_
         check_exit()
         win.flip()
 
-    stop_stimulus(stimulus=trial['arrow'])
-    try:
+    if arrow_on is True:
+        stop_stimulus(stimulus=trial['arrow'])
+    if stop_on is True:
         stop_stimulus(stimulus=trial['stop'])
-    except:
-        pass
 
     return reaction_time, response
 
@@ -123,8 +126,12 @@ def update_stops_times(trial, config, response, stops_times):
 def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
     fixation = visual.TextStim(win, color='black', text='+', height=2 * config['Text_size'])
 
-    arrow_show_time = int(round(config['Arrow_show_time'] * frames_per_sec))
-    resp_time = int(round(config['Resp_time'] * frames_per_sec))
+    # arrow_show_time = int(round(config['Arrow_show_time'] * frames_per_sec)) - 1
+    # resp_time = int(round(config['Resp_time'] * frames_per_sec))
+    one_frame_time = 1.0/frames_per_sec
+
+    arrow_show_time = config['Arrow_show_time'] - one_frame_time
+    resp_time = config['Resp_time'] - one_frame_time
 
     data = list()
     trial_number = 1
@@ -133,8 +140,10 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
     for block in blocks:
         for trial in block['trials']:
             if trial['stop'] is not None:
-                stop_show_start = int(round(stops_times[trial['stop'][1]] * frames_per_sec))
-                stop_show_end = int(round(stop_show_start + config['Stop_show_time'] * frames_per_sec))
+                # stop_show_start = int(round(stops_times[trial['stop'][1]] * frames_per_sec))
+                # stop_show_end = int(round(stop_show_start + config['Stop_show_time'] * frames_per_sec))
+                stop_show_start = stops_times[trial['stop'][1]] - one_frame_time
+                stop_show_end = stop_show_start + config['Stop_show_time']
             else:
                 stop_show_start = None
                 stop_show_end = None
