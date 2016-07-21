@@ -5,8 +5,11 @@ import pygame
 
 from classes.load_data import read_text_from_file
 from classes.check_exit import check_exit
+from classes.triggers import prepare_trigger, TriggerTypes, send_trigger
 
-TRIGGERS = list()
+PORT = None
+TRIGGERS_LIST = list()
+TRIGGER_NO = 0
 
 
 def show_info(win, file_name, text_size, screen_width, insert=''):
@@ -41,17 +44,33 @@ def draw_fixation(win, fixation, config):
     win.flip()
 
 
-def start_stimulus(stimulus):
+def start_stimulus(win, stimulus, trigger_type, send_eeg_triggers):
+    global TRIGGER_NO, TRIGGERS_LIST
     if stimulus[0] == 'image':
         stimulus[2].setAutoDraw(True)
+        TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=trigger_type, trigger_no=TRIGGER_NO,
+                                                    triggers_list=TRIGGERS_LIST)
+        win.flip()
+        if send_eeg_triggers:
+            send_trigger(port=PORT, trigger_no=TRIGGER_NO)
 
     elif stimulus[0] == 'text':
         stimulus[2].setAutoDraw(True)
+        TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=trigger_type, trigger_no=TRIGGER_NO,
+                                                    triggers_list=TRIGGERS_LIST)
+        win.flip()
+        if send_eeg_triggers:
+            send_trigger(port=PORT, trigger_no=TRIGGER_NO)
 
     elif stimulus[0] == 'sound':
         pygame.init()
         pygame.mixer.music.load(stimulus[2])
+        TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=trigger_type, trigger_no=TRIGGER_NO,
+                                                    triggers_list=TRIGGERS_LIST)
+        win.flip()
         pygame.mixer.music.play()
+        if send_eeg_triggers:
+            send_trigger(port=PORT, trigger_no=TRIGGER_NO)
     else:
         raise Exception("Problems with start stimulus " + stimulus)
 
@@ -70,11 +89,13 @@ def stop_stimulus(stimulus):
         raise Exception("Problems with stop stimulus " + stimulus)
 
 
-def new_run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end, stop_show_start, config):
+def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end, stop_show_start, config):
+    global PORT, TRIGGER_NO, TRIGGERS_LIST
     reaction_time = None
     response = None
 
-    start_stimulus(stimulus=trial['arrow'])
+    start_stimulus(win=win, stimulus=trial['arrow'], trigger_type=TriggerTypes.GO,
+                   send_eeg_triggers=config['Send_EEG_trigg'])
     check_exit()
     arrow_on = True
     stop_on = None
@@ -83,25 +104,34 @@ def new_run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_
     win.flip()
 
     while resp_clock.getTime() < resp_time:
+        change = False
         if arrow_on is True and resp_clock.getTime() > arrow_show_time:
             stop_stimulus(stimulus=trial['arrow'])
             arrow_on = False
+            change = True
         if trial['stop'] is not None:
             if stop_on is None and resp_clock.getTime() > stop_show_start:
-                start_stimulus(stimulus=trial['stop'])
+                start_stimulus(win=win, stimulus=trial['stop'], trigger_type=TriggerTypes.ST,
+                               send_eeg_triggers=config['Send_EEG_trigg'])
                 stop_on = True
+                change = True
             if stop_on is True and resp_clock.getTime() > stop_show_end:
                 stop_stimulus(stimulus=trial['stop'])
                 stop_on = False
+                change = True
 
         key = event.getKeys(keyList=config['Keys'])
         if key:
             reaction_time = resp_clock.getTime()
-            # TRIGGER
+            if config['Send_EEG_trigg']:
+                TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.RE, trigger_no=TRIGGER_NO,
+                                                            triggers_list=TRIGGERS_LIST)
+                send_trigger(port=PORT, trigger_no=TRIGGER_NO)
             response = key[0]
             break
         check_exit()
-        win.flip()
+        if change is False:
+            win.flip()
 
     if arrow_on is True:
         stop_stimulus(stimulus=trial['arrow'])
@@ -123,12 +153,17 @@ def update_stops_times(trial, config, response, stops_times):
     return stops_times
 
 
-def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
+def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, trigger_no, triggers_list):
+    global PORT, TRIGGERS_LIST, TRIGGER_NO
+    PORT = port
+    TRIGGERS_LIST = triggers_list
+    TRIGGER_NO = trigger_no
+
     fixation = visual.TextStim(win, color='black', text='+', height=2 * config['Text_size'])
 
     # arrow_show_time = int(round(config['Arrow_show_time'] * frames_per_sec)) - 1
     # resp_time = int(round(config['Resp_time'] * frames_per_sec))
-    one_frame_time = 1.0/frames_per_sec
+    one_frame_time = 1.0 / frames_per_sec
 
     arrow_show_time = config['Arrow_show_time'] - one_frame_time
     resp_time = config['Resp_time'] - one_frame_time
@@ -156,9 +191,9 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
             check_exit()
 
             # arrow, stop and resp
-            reaction_time, response = new_run_trial(win=win, resp_clock=resp_clock, trial=trial, resp_time=resp_time,
-                                                    arrow_show_time=arrow_show_time, stop_show_end=stop_show_end,
-                                                    stop_show_start=stop_show_start, config=config)
+            reaction_time, response = run_trial(win=win, resp_clock=resp_clock, trial=trial, resp_time=resp_time,
+                                                arrow_show_time=arrow_show_time, stop_show_end=stop_show_end,
+                                                stop_show_start=stop_show_start, config=config)
 
             # rest
             jitter = (2 * random.random() - 1) * config['Rest_time_jitter']
@@ -180,4 +215,4 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times):
         show_info(win=win, file_name=block['text_after_block'], text_size=config['Text_size'],
                   screen_width=screen_res['width'])
 
-    return data, TRIGGERS
+    return data, TRIGGERS_LIST

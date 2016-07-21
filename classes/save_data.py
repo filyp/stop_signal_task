@@ -3,8 +3,10 @@ import csv
 
 
 def save_triggers(data, name):
+    data = [row[0]+':'+row[1]+'\n' for row in data]
     with open(os.path.join('results', 'triggers_maps', 'triggerMap_{}.txt'.format(name)), 'w') as mapFile:
-        mapFile.writelines(data)
+        for row in data:
+            mapFile.writelines(row)
 
 
 def save_beh(data, name):

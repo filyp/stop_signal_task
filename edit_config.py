@@ -40,6 +40,9 @@ def main():
     parser.add_argument('Number_of_experiment_trials', default=4, action='store', type=int, help='Number')
     parser.add_argument('Percent_of_trials_with_stop', default=25, action='store', type=int, help='Number')
 
+    parser.add_argument('Send_EEG_trigg', default='False', choices=['True', 'False'], help='Choice')
+    parser.add_argument('Send_Nirs_trigg', default='False', choices=['True', 'False'], help='Choice')
+
     parser.add_argument('Arrow_show_time', default=1, action='store', type=int, help='Number')
     parser.add_argument('Stop_show_time', default=1, action='store', type=int, help='Number')
     parser.add_argument('Start_wait_to_stop', default=1, action='store', type=int, help='Number')

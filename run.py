@@ -10,9 +10,9 @@ from classes.show import show_info, show
 from classes.save_data import save_beh, save_triggers
 
 import os
+import parallel
 
-import cgitb
-
+# import cgitb
 # cgitb.enable(format="text")
 
 __author__ = 'ociepkam'
@@ -22,6 +22,15 @@ def run():
     # Prepare experiment
     config = load_config()
     part_id, sex, age, observer_id, date = experiment_info(config['Observer'])
+
+    # EEG triggers
+    if config['Send_EEG_trigg']:
+        port = parallel.Parallel()
+        port.setData(0x00)
+    else:
+        port = None
+    triggers_list = list()
+    trigger_no = 0
 
     # screen
     win, screen_res, frames_per_sec = create_win(screen_color=config['Screen_color'])
@@ -41,7 +50,9 @@ def run():
     # Run experiment
     # Ophthalmic procedure
     if config['Ophthalmic_procedure']:
-        ophthalmic_procedure(win=win, send_triggers=False, screen_res=screen_res, frames_per_sec=frames_per_sec)
+        trigger_no, triggers_list = ophthalmic_procedure(win=win, send_triggers=config['Send_EEG_trigg'],
+                                                         screen_res=screen_res, frames_per_sec=frames_per_sec,
+                                                         port=port, trigger_no=trigger_no, triggers_list=triggers_list)
 
     # Instruction
     instructions = sorted([f for f in os.listdir('messages') if f.startswith('instruction')])
@@ -54,12 +65,13 @@ def run():
     #     stops_times=stops_times)
 
     # Experiment
-    beh, triggers = show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
-                         blocks=experiment_block, stops_times=stops_times)
+    beh, triggers_list = show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
+                              blocks=experiment_block, stops_times=stops_times, port=port, trigger_no=trigger_no,
+                              triggers_list=triggers_list)
 
     # Save data
-    # save_beh(data=beh, name=part_id)
-    # save_triggers(data=triggers, name=part_id)
+    save_beh(data=beh, name=part_id)
+    save_triggers(data=triggers_list, name=part_id)
 
     # Experiment end
     show_info(win=win, file_name=os.path.join('messages', 'end.txt'), text_size=config['Text_size'],
@@ -68,7 +80,7 @@ def run():
 
 run()
 
-# TODO: triggery
+# TODO: triggery_nirs
 # TODO: loggi
 # TODO: informacje w przerwach
 
