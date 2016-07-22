@@ -5,7 +5,7 @@ import pygame
 
 from classes.show_info import show_info, break_info
 from classes.check_exit import check_exit
-from classes.triggers import prepare_trigger, TriggerTypes, send_trigger
+from classes.triggers import prepare_trigger, TriggerTypes, send_trigger, prepare_trigger_name
 
 PORT = None
 TRIGGERS_LIST = list()
@@ -23,26 +23,23 @@ def draw_fixation(win, fixation, config):
 
 def start_stimulus(win, stimulus, send_eeg_triggers):
     global TRIGGER_NO, TRIGGERS_LIST
+
     if stimulus[0] == 'image':
         stimulus[2].setAutoDraw(True)
-
         win.flip()
-        if send_eeg_triggers:
-            send_trigger(port=PORT, trigger_no=TRIGGER_NO)
+        send_trigger(port=PORT, trigger_no=TRIGGER_NO, send_eeg_triggers=send_eeg_triggers)
 
     elif stimulus[0] == 'text':
         stimulus[2].setAutoDraw(True)
         win.flip()
-        if send_eeg_triggers:
-            send_trigger(port=PORT, trigger_no=TRIGGER_NO)
+        send_trigger(port=PORT, trigger_no=TRIGGER_NO, send_eeg_triggers=send_eeg_triggers)
 
     elif stimulus[0] == 'sound':
         pygame.init()
         pygame.mixer.music.load(stimulus[2])
         win.flip()
         pygame.mixer.music.play()
-        if send_eeg_triggers:
-            send_trigger(port=PORT, trigger_no=TRIGGER_NO)
+        send_trigger(port=PORT, trigger_no=TRIGGER_NO, send_eeg_triggers=send_eeg_triggers)
     else:
         raise Exception("Problems with start stimulus " + stimulus)
 
@@ -61,12 +58,15 @@ def stop_stimulus(stimulus):
         raise Exception("Problems with stop stimulus " + stimulus)
 
 
-def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end, stop_show_start, config):
+def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end, stop_show_start, config,
+              real_stop_show_start):
     global PORT, TRIGGER_NO, TRIGGERS_LIST
+
     reaction_time = None
     response = None
+    trigger_name = prepare_trigger_name(trial=trial, stop_show_start=real_stop_show_start)
     TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.GO, trigger_no=TRIGGER_NO,
-                                                triggers_list=TRIGGERS_LIST)
+                                                triggers_list=TRIGGERS_LIST, trigger_name=trigger_name)
     start_stimulus(win=win, stimulus=trial['arrow'], send_eeg_triggers=config['Send_EEG_trigg'])
     check_exit()
     arrow_on = True
@@ -84,7 +84,7 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
         if trial['stop'] is not None:
             if stop_on is None and resp_clock.getTime() > stop_show_start:
                 TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.ST, trigger_no=TRIGGER_NO,
-                                                            triggers_list=TRIGGERS_LIST)
+                                                            triggers_list=TRIGGERS_LIST, trigger_name=trigger_name)
                 start_stimulus(win=win, stimulus=trial['stop'], send_eeg_triggers=config['Send_EEG_trigg'])
                 stop_on = True
                 change = True
@@ -97,7 +97,7 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
         if key:
             reaction_time = resp_clock.getTime()
             TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.RE, trigger_no=TRIGGER_NO,
-                                                        triggers_list=TRIGGERS_LIST)
+                                                        triggers_list=TRIGGERS_LIST, trigger_name=trigger_name)
             if config['Send_EEG_trigg']:
                 send_trigger(port=PORT, trigger_no=TRIGGER_NO)
             response = key[0]
@@ -110,6 +110,13 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
         stop_stimulus(stimulus=trial['arrow'])
     if stop_on is True:
         stop_stimulus(stimulus=trial['stop'])
+
+    # Add response to all trial triggers
+    if response is not None:
+        TRIGGERS_LIST[-1] = (TRIGGERS_LIST[-1][0], TRIGGERS_LIST[-1][1][:-1] + response)
+        TRIGGERS_LIST[-2] = (TRIGGERS_LIST[-2][0], TRIGGERS_LIST[-2][1][:-1] + response)
+        if TRIGGERS_LIST[-2][1].startswith('ST'):
+            TRIGGERS_LIST[-3] = (TRIGGERS_LIST[-3][0], TRIGGERS_LIST[-3][1][:-1] + response)
 
     return reaction_time, response
 
@@ -151,9 +158,11 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
         not_stopped_trials = 0.
         for trial in block['trials']:
             if trial['stop'] is not None:
-                stop_show_start = stops_times[trial['stop'][1]] - one_frame_time
+                real_stop_show_start = stops_times[trial['stop'][1]]
+                stop_show_start = real_stop_show_start - one_frame_time
                 stop_show_end = stop_show_start + config['Stop_show_time']
             else:
+                real_stop_show_start = None
                 stop_show_start = None
                 stop_show_end = None
 
@@ -167,7 +176,8 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
             # arrow, stop and resp
             reaction_time, response = run_trial(win=win, resp_clock=resp_clock, trial=trial, resp_time=resp_time,
                                                 arrow_show_time=arrow_show_time, stop_show_end=stop_show_end,
-                                                stop_show_start=stop_show_start, config=config)
+                                                stop_show_start=stop_show_start, config=config,
+                                                real_stop_show_start=real_stop_show_start)
 
             # rest
             jitter = (2 * random.random() - 1) * config['Rest_time_jitter']
@@ -199,7 +209,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
                     not_stopped_trials += 1
                 else:
                     stopped_trials += 1
-            
+
             # update stops_times
             stops_times = update_stops_times(trial=trial, config=config, response=response, stops_times=stops_times)
 
@@ -209,22 +219,22 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
             all_reactions_times /= (len(block['trials']) - no_reactions)
             all_reactions_times = round(all_reactions_times, 2)
             answers_correctness /= (len(block['trials']) - no_reactions)
-            answers_correctness = round(answers_correctness, 2)
+            answers_correctness = round(100 * answers_correctness, 2)
         except:
             all_reactions_times = 'No answers!'
             answers_correctness = 'No answers!'
         try:
             stopped_ratio = stopped_trials / (not_stopped_trials + stopped_trials)
-            stopped_ratio = round(stopped_ratio, 2)
+            stopped_ratio = round(100 * stopped_ratio, 2)
         except:
             stopped_ratio = 'No stops!'
 
-        break_extra_info = break_info(show_answers_correctness=config['Show_answers_correctness'], 
+        break_extra_info = break_info(show_answers_correctness=config['Show_answers_correctness'],
                                       show_response_time=config['Show_response_time'],
                                       show_stopped_ratio=config['Show_stopped_ratio'],
-                                      answers_correctness=str(answers_correctness),
-                                      response_time=str(all_reactions_times),
-                                      stopped_ratio=str(stopped_ratio))
+                                      answers_correctness=str(answers_correctness)+'%',
+                                      response_time=str(all_reactions_times)+'s',
+                                      stopped_ratio=str(stopped_ratio)+'%')
         show_info(win=win, file_name=block['text_after_block'], text_size=config['Text_size'],
                   screen_width=screen_res['width'], insert=break_extra_info)
 

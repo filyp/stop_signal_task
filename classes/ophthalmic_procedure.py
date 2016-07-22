@@ -63,7 +63,7 @@ def ophthalmic_procedure(win, send_triggers, screen_res, frames_per_sec, port, t
         if frame_counter % frames_per_sec == 0 and send_triggers:
             trigger_no, triggers_list = prepare_trigger(trigger_type=TriggerTypes.BLINK, trigger_no=trigger_no,
                                                         triggers_list=triggers_list)
-            send_trigger(port=port, trigger_no=trigger_no)
+            send_trigger(port=port, trigger_no=trigger_no, send_eeg_triggers=send_triggers)
         win.flip()
         check_exit()
     [item.setAutoDraw(False) for item in crosses]

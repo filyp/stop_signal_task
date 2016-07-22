@@ -86,7 +86,7 @@ def run():
 
 run()
 
-# TODO: ustalic jak ma wygladac mapowanie triggerow
+
 # TODO: przetestowac triggery nirsowe
 
 # TODO: loggi

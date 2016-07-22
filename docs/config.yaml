@@ -4,7 +4,7 @@ Fix_time: 1
 Keys: {L: lctrl, R: rctrl}
 Number_of_experiment_blocks: 1
 Number_of_experiment_trials: 4
-Number_of_training_trials: 4
+Number_of_training_trials: 0
 Observer: Mis
 Ophthalmic_procedure: false
 Percent_of_trials_with_stop: 25
