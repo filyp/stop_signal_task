@@ -205,10 +205,12 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
         try:
             print len(block['trials']), no_reactions
             all_reactions_times /= (len(block['trials']) - no_reactions)
+            all_reactions_times = round(all_reactions_times, 2)
         except:
             all_reactions_times = 'No answers!'
         try:
             stopped_ratio = stopped_trials / (not_stopped_trials + stopped_trials)
+            stopped_ratio = round(stopped_ratio, 2)
         except:
             stopped_ratio = 'No stops!'
 
