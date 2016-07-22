@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from classes.load_data import load_data_names
+from classes.load_data import load_data_names, load_config
 
 from psychopy import gui
 import yaml
@@ -23,6 +23,17 @@ CONFIG_KEYS = [
     # Break info
     'Show_answers_correctness', 'Show_response_time', 'Show_stopped_ratio'
 ]
+
+
+def config_verification():
+    config = load_config()
+
+    # All elements
+    for key in CONFIG_KEYS:
+        assert key in config.keys(), 'No ' + key + ' in config'
+
+    assert config['Rest_time_jitter'] <= config['Rest_time'], 'Rest_time_jitter is longer than Rest_time'
+    assert config['Number_of_experiment_blocks'] <= config['Number_of_experiment_trials'], 'More blocks than trials'
 
 
 def main():
@@ -96,6 +107,7 @@ def main():
     with open("docs/config.yaml", 'w') as save_file:
         save_file.write(yaml.dump(args_dict))
 
+    config_verification()
 
 if __name__ == '__main__':
     main()

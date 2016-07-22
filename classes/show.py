@@ -189,7 +189,10 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
                 if response == config['Keys'][trial['arrow'][1]]:
                     answers_correctness += 1
             else:
-                no_reactions += 1
+                if trial['stop'] is not None:
+                    no_reactions += 1
+                else:
+                    all_reactions_times += config['Resp_time']
 
             if trial['stop'] is not None:
                 if reaction_time is not None:
@@ -209,7 +212,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
             answers_correctness = round(answers_correctness, 2)
         except:
             all_reactions_times = 'No answers!'
-            answers_correctness = 'No answers'
+            answers_correctness = 'No answers!'
         try:
             stopped_ratio = stopped_trials / (not_stopped_trials + stopped_trials)
             stopped_ratio = round(stopped_ratio, 2)

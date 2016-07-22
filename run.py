@@ -10,6 +10,7 @@ from classes.show import show
 from classes.save_data import save_beh, save_triggers
 from classes.triggers import create_eeg_port, create_nirs_dev
 from classes.show_info import show_info
+from edit_config import config_verification
 
 import os
 
@@ -21,6 +22,7 @@ __author__ = 'ociepkam'
 
 def run():
     # Prepare experiment
+    config_verification()
     config = load_config()
     part_id, sex, age, observer_id, date = experiment_info(config['Observer'])
 
@@ -88,7 +90,5 @@ run()
 # TODO: przetestowac triggery nirsowe
 
 # TODO: loggi
-
-# TODO: weryfikacja configu
 
 # TODO: dokumenatcja
