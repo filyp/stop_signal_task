@@ -28,11 +28,13 @@ def run():
 
     # EEG triggers
     if config['Send_EEG_trigg']:
-        port = create_eeg_port()
-    elif config['Send_Nirs_trigg']:
-        port = create_nirs_dev()
+        port_eeg = create_eeg_port()
     else:
-        port = None
+        port_eeg = None
+    if config['Send_Nirs_trigg']:
+        port_nirs = create_nirs_dev()
+    else:
+        port_nirs = None
     triggers_list = list()
     trigger_no = 0
 
@@ -54,10 +56,11 @@ def run():
     # Run experiment
     # Ophthalmic procedure
     if config['Ophthalmic_procedure']:
-        trigger_no, triggers_list = ophthalmic_procedure(win=win, send_triggers=config['Send_EEG_trigg'],
+        trigger_no, triggers_list = ophthalmic_procedure(win=win, send_eeg_triggers=config['Send_EEG_trigg'],
+                                                         send_nirs_triggers=config['Send_Nirs_trigg'],
                                                          screen_res=screen_res, frames_per_sec=frames_per_sec,
-                                                         port=port, trigger_no=trigger_no, triggers_list=triggers_list,
-                                                         text_size=config['Text_size'])
+                                                         port_eeg=port_eeg, port_nirs=port_nirs, trigger_no=trigger_no,
+                                                         triggers_list=triggers_list, text_size=config['Text_size'])
 
     # Instruction
     instructions = sorted([f for f in os.listdir('messages') if f.startswith('instruction')])
@@ -67,13 +70,13 @@ def run():
 
     # Training
     show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
-         blocks=training_block, stops_times=stops_times, port=None, trigger_no=trigger_no,
+         blocks=training_block, stops_times=stops_times, trigger_no=trigger_no,
          triggers_list=triggers_list)
 
     # Experiment
     beh, triggers_list = show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
-                              blocks=experiment_block, stops_times=stops_times, port=port, trigger_no=trigger_no,
-                              triggers_list=triggers_list)
+                              blocks=experiment_block, stops_times=stops_times, port_eeg=port_eeg, port_nirs=port_nirs,
+                              trigger_no=trigger_no, triggers_list=triggers_list)
 
     # Save data
     save_beh(data=beh, name=part_id)

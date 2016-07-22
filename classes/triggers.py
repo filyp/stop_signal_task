@@ -49,10 +49,10 @@ def prepare_trigger(trigger_no, triggers_list, trigger_type, trigger_name=None):
     return trigger_no, triggers_list
 
 
-def send_trigger(port, trigger_no, send_eeg_triggers=False, send_nirs_triggers=False):
+def send_trigger(trigger_no, port_eeg=None, port_nirs=None, send_eeg_triggers=False, send_nirs_triggers=False):
     if send_eeg_triggers:
-        port.setData(trigger_no)
+        port_eeg.setData(trigger_no)
         time.sleep(0.01)
-        port.setData(0x00)
+        port_eeg.setData(0x00)
     if send_nirs_triggers:
-        port.activate_line(trigger_no)
+        port_nirs.activate_line(trigger_no)

@@ -1,5 +1,5 @@
 Nr,GO_type,GO_name,RE_key,RE_true,RE_time,ST_type,ST_name,ST_wait_time
-1,image,L,,lctrl,,sound,2,1
-2,image,R,,rctrl,,,,
-3,image,R,,rctrl,,,,
-4,image,L,,lctrl,,,,
+1,image,R,rctrl,rctrl,1.8000640869140625,,,
+2,image,L,,lctrl,,,,
+3,image,L,,lctrl,,text,sst,1
+4,image,R,rctrl,rctrl,0.36681103706359863,,,

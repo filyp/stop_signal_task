@@ -1,5 +1,7 @@
-1:GO_image_L_sound_2_1_-
-2:ST_image_L_sound_2_1_-
-3:GO_image_R_-_-_-_-
-4:GO_image_R_-_-_-_-
-5:GO_image_L_-_-_-_-
+1:GO_image_R_-_-_-_rctrl
+2:RE_image_R_-_-_-_rctrl
+3:GO_image_L_-_-_-_-
+4:GO_image_L_text_sst_1_-
+5:ST_image_L_text_sst_1_-
+6:GO_image_R_-_-_-_rctrl
+7:RE_image_R_-_-_-_rctrl

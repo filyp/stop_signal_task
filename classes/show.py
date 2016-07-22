@@ -7,7 +7,8 @@ from classes.show_info import show_info, break_info
 from classes.check_exit import check_exit
 from classes.triggers import prepare_trigger, TriggerTypes, send_trigger, prepare_trigger_name
 
-PORT = None
+PORT_EEG = None
+PORT_NIRS = None
 TRIGGERS_LIST = list()
 TRIGGER_NO = 0
 
@@ -21,25 +22,31 @@ def draw_fixation(win, fixation, config):
     win.flip()
 
 
-def start_stimulus(win, stimulus, send_eeg_triggers):
+def start_stimulus(win, stimulus, send_eeg_triggers, send_nirs_triggers):
     global TRIGGER_NO, TRIGGERS_LIST
 
     if stimulus[0] == 'image':
         stimulus[2].setAutoDraw(True)
         win.flip()
-        send_trigger(port=PORT, trigger_no=TRIGGER_NO, send_eeg_triggers=send_eeg_triggers)
+        send_trigger(port_eeg=PORT_EEG, port_nirs=PORT_NIRS, trigger_no=TRIGGER_NO,
+                     send_eeg_triggers=send_eeg_triggers,
+                     send_nirs_triggers=send_nirs_triggers)
 
     elif stimulus[0] == 'text':
         stimulus[2].setAutoDraw(True)
         win.flip()
-        send_trigger(port=PORT, trigger_no=TRIGGER_NO, send_eeg_triggers=send_eeg_triggers)
+        send_trigger(port_eeg=PORT_EEG, port_nirs=PORT_NIRS, trigger_no=TRIGGER_NO,
+                     send_eeg_triggers=send_eeg_triggers,
+                     send_nirs_triggers=send_nirs_triggers)
 
     elif stimulus[0] == 'sound':
         pygame.init()
         pygame.mixer.music.load(stimulus[2])
         win.flip()
         pygame.mixer.music.play()
-        send_trigger(port=PORT, trigger_no=TRIGGER_NO, send_eeg_triggers=send_eeg_triggers)
+        send_trigger(port_eeg=PORT_EEG, port_nirs=PORT_NIRS, trigger_no=TRIGGER_NO,
+                     send_eeg_triggers=send_eeg_triggers,
+                     send_nirs_triggers=send_nirs_triggers)
     else:
         raise Exception("Problems with start stimulus " + stimulus)
 
@@ -60,14 +67,15 @@ def stop_stimulus(stimulus):
 
 def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end, stop_show_start, config,
               real_stop_show_start):
-    global PORT, TRIGGER_NO, TRIGGERS_LIST
+    global PORT_EEG, TRIGGER_NO, TRIGGERS_LIST
 
     reaction_time = None
     response = None
     trigger_name = prepare_trigger_name(trial=trial, stop_show_start=real_stop_show_start)
     TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.GO, trigger_no=TRIGGER_NO,
                                                 triggers_list=TRIGGERS_LIST, trigger_name=trigger_name)
-    start_stimulus(win=win, stimulus=trial['arrow'], send_eeg_triggers=config['Send_EEG_trigg'])
+    start_stimulus(win=win, stimulus=trial['arrow'], send_eeg_triggers=config['Send_EEG_trigg'],
+                   send_nirs_triggers=config['Send_Nirs_trigg'])
     check_exit()
     arrow_on = True
     stop_on = None
@@ -85,7 +93,8 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
             if stop_on is None and resp_clock.getTime() > stop_show_start:
                 TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.ST, trigger_no=TRIGGER_NO,
                                                             triggers_list=TRIGGERS_LIST, trigger_name=trigger_name)
-                start_stimulus(win=win, stimulus=trial['stop'], send_eeg_triggers=config['Send_EEG_trigg'])
+                start_stimulus(win=win, stimulus=trial['stop'], send_eeg_triggers=config['Send_EEG_trigg'],
+                               send_nirs_triggers=config['Send_Nirs_trigg'])
                 stop_on = True
                 change = True
             if stop_on is True and resp_clock.getTime() > stop_show_end:
@@ -99,7 +108,9 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
             TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.RE, trigger_no=TRIGGER_NO,
                                                         triggers_list=TRIGGERS_LIST, trigger_name=trigger_name)
             if config['Send_EEG_trigg']:
-                send_trigger(port=PORT, trigger_no=TRIGGER_NO)
+                send_trigger(port_eeg=PORT_EEG, port_nirs=PORT_NIRS, trigger_no=TRIGGER_NO,
+                             send_eeg_triggers=config['Send_EEG_trigg'],
+                             send_nirs_triggers=config['Send_Nirs_trigg'])
             response = key[0]
             break
         check_exit()
@@ -133,9 +144,11 @@ def update_stops_times(trial, config, response, stops_times):
     return stops_times
 
 
-def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, trigger_no, triggers_list):
-    global PORT, TRIGGERS_LIST, TRIGGER_NO
-    PORT = port
+def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_no, triggers_list,
+         port_eeg=None, port_nirs=None):
+    global PORT_EEG, PORT_NIRS, TRIGGERS_LIST, TRIGGER_NO
+    PORT_EEG = port_eeg
+    PORT_NIRS = port_nirs
     TRIGGERS_LIST = triggers_list
     TRIGGER_NO = trigger_no
 
@@ -236,9 +249,9 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
         break_extra_info = break_info(show_answers_correctness=config['Show_answers_correctness'],
                                       show_response_time=config['Show_response_time'],
                                       show_stopped_ratio=config['Show_stopped_ratio'],
-                                      answers_correctness=str(answers_correctness)+'%',
-                                      response_time=str(all_reactions_times)+'s',
-                                      stopped_ratio=str(stopped_ratio)+'%')
+                                      answers_correctness=str(answers_correctness) + '%',
+                                      response_time=str(all_reactions_times) + 's',
+                                      stopped_ratio=str(stopped_ratio) + '%')
         show_info(win=win, file_name=block['text_after_block'], text_size=config['Text_size'],
                   screen_width=screen_res['width'], insert=break_extra_info)
 
