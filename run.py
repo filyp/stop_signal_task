@@ -88,7 +88,6 @@ run()
 # TODO: przetestowac triggery nirsowe
 
 # TODO: loggi
-# TODO: poprawne odpowiedzi w przerwach
 
 # TODO: weryfikacja configu
 

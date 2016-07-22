@@ -93,7 +93,7 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
                 stop_on = False
                 change = True
 
-        key = event.getKeys(keyList=config['Keys'])
+        key = event.getKeys(keyList=config['Keys'].values())
         if key:
             reaction_time = resp_clock.getTime()
             TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.RE, trigger_no=TRIGGER_NO,
@@ -134,8 +134,6 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
 
     fixation = visual.TextStim(win, color='black', text='+', height=2 * config['Text_size'])
 
-    # arrow_show_time = int(round(config['Arrow_show_time'] * frames_per_sec)) - 1
-    # resp_time = int(round(config['Resp_time'] * frames_per_sec))
     one_frame_time = 1.0 / frames_per_sec
 
     arrow_show_time = config['Arrow_show_time'] - one_frame_time
@@ -153,8 +151,6 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
         not_stopped_trials = 0.
         for trial in block['trials']:
             if trial['stop'] is not None:
-                # stop_show_start = int(round(stops_times[trial['stop'][1]] * frames_per_sec))
-                # stop_show_end = int(round(stop_show_start + config['Stop_show_time'] * frames_per_sec))
                 stop_show_start = stops_times[trial['stop'][1]] - one_frame_time
                 stop_show_end = stop_show_start + config['Stop_show_time']
             else:
@@ -187,9 +183,11 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
                              'RE_time': reaction_time, 'ST_name': None, 'ST_wait_time': None})
             trial_number += 1
 
-            # block info
+            # break info
             if reaction_time is not None:
                 all_reactions_times += reaction_time
+                if response == config['Keys'][trial['arrow'][1]]:
+                    answers_correctness += 1
             else:
                 no_reactions += 1
 
@@ -202,12 +200,16 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
             # update stops_times
             stops_times = update_stops_times(trial=trial, config=config, response=response, stops_times=stops_times)
 
+        # break info
+
         try:
-            print len(block['trials']), no_reactions
             all_reactions_times /= (len(block['trials']) - no_reactions)
             all_reactions_times = round(all_reactions_times, 2)
+            answers_correctness /= (len(block['trials']) - no_reactions)
+            answers_correctness = round(answers_correctness, 2)
         except:
             all_reactions_times = 'No answers!'
+            answers_correctness = 'No answers'
         try:
             stopped_ratio = stopped_trials / (not_stopped_trials + stopped_trials)
             stopped_ratio = round(stopped_ratio, 2)

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from classes.load_data import load_data_names
+
 from psychopy import gui
 import yaml
 
@@ -75,8 +77,21 @@ def main():
             my_dlg.data[idx] = True
         args_dict[key] = my_dlg.data[idx]
 
-    args_dict['Keys'] = ['lctrl', 'rctrl']
     args_dict['Possible_wait_to_stop'] = [args_dict['Start_wait_to_stop']]
+
+    arrows_names = load_data_names('arrows')
+    arrows_names = sorted(arrows_names)
+
+    if len(arrows_names) == 0:
+        keys = []
+    elif len(arrows_names) == 2:
+        keys = {arrows_names[0]: 'lctrl', arrows_names[1]: 'rctrl'}
+    else:
+        keys = dict()
+        for arrow in arrows_names:
+            keys[arrow] = 'space'
+
+    args_dict['Keys'] = keys
 
     with open("docs/config.yaml", 'w') as save_file:
         save_file.write(yaml.dump(args_dict))

@@ -1,10 +1,10 @@
 Arrow_show_time: 1
 Break_between_fix_and_arrow: 1
 Fix_time: 1
-Keys: [lctrl, rctrl]
+Keys: {L: lctrl, R: rctrl}
 Number_of_experiment_blocks: 1
 Number_of_experiment_trials: 4
-Number_of_training_trials: 0
+Number_of_training_trials: 4
 Observer: Mis
 Ophthalmic_procedure: false
 Percent_of_trials_with_stop: 25

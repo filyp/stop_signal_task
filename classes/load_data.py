@@ -51,6 +51,28 @@ def load_data(win, folder_name, config, screen_res):
     return data
 
 
+def load_data_names(folder_name):
+    names = [f for f in os.listdir(folder_name)]
+    data = list()
+    for name in names:
+        path = os.path.join(folder_name, name)
+        try:
+            if name[-3:] == 'txt':
+                with open(path, 'r') as text_file:
+                    for line in text_file:
+                        data.append(line.split(':')[0])
+            elif name[-3:] in possible_images_format:
+                data.append(name.split('.')[0])
+            elif name[-3:] in possible_audio_format:
+                data.append(name.split('.')[0])
+            else:
+                raise Exception('Error while loading a file ' + name)
+        except:
+            raise Exception('Error while loading a file ' + name)
+
+    return data
+
+
 def read_text_from_file(file_name, insert=''):
     """
     Method that read message from text file, and optionally add some
