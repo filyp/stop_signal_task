@@ -1,0 +1,5 @@
+1:GO_image_L_sound_2_1_-
+2:ST_image_L_sound_2_1_-
+3:GO_image_R_-_-_-_-
+4:GO_image_R_-_-_-_-
+5:GO_image_L_-_-_-_-
