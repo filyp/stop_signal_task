@@ -60,19 +60,21 @@ def prepare_trials(number_of_blocks, number_of_experiment_trials, number_of_trai
     assert percent_of_trials_with_stop <= 50, "procent stopow nie moze byc wiekszy od 50"
 
     # prepare training
-    training_arrows_table = prepare_arrows(arrows=arrows,
-                                           number_of_trials=number_of_training_trials)
+    if number_of_training_trials:
+        training_arrows_table = prepare_arrows(arrows=arrows,
+                                               number_of_trials=number_of_training_trials)
 
-    training_stop_table = prepare_stops(stops=stops,
-                                        number_of_trials=number_of_training_trials,
-                                        percent_of_trials_with_stop=percent_of_trials_with_stop)
+        training_stop_table = prepare_stops(stops=stops,
+                                            number_of_trials=number_of_training_trials,
+                                            percent_of_trials_with_stop=percent_of_trials_with_stop)
 
-    text_after_training = [os.path.join('messages', 'training_end.txt')]
-    training_block = blocks_creator(arrows_table=training_arrows_table,
-                                    stop_table=training_stop_table,
-                                    num=1,
-                                    breaks=text_after_training)
-
+        text_after_training = [os.path.join('messages', 'training_end.txt')]
+        training_block = blocks_creator(arrows_table=training_arrows_table,
+                                        stop_table=training_stop_table,
+                                        num=1,
+                                        breaks=text_after_training)
+    else:
+        training_block = []
     # prepare experiment
     experiment_arrows_table = prepare_arrows(arrows=arrows,
                                              number_of_trials=number_of_experiment_trials)

@@ -3,36 +3,13 @@ import time
 import random
 import pygame
 
-from classes.load_data import read_text_from_file
+from classes.show_info import show_info, break_info
 from classes.check_exit import check_exit
 from classes.triggers import prepare_trigger, TriggerTypes, send_trigger
 
 PORT = None
 TRIGGERS_LIST = list()
 TRIGGER_NO = 0
-
-
-def show_info(win, file_name, text_size, screen_width, insert=''):
-    """
-    Clear way to show info message into screen.
-    :param win:
-    :param file_name:
-    :param screen_width:
-    :param text_size:
-    :param insert: extra text for read_text_from_file
-    :return:
-    """
-    hello_msg = read_text_from_file(file_name, insert=insert)
-    hello_msg = visual.TextStim(win=win, antialias=True, font=u'Arial',
-                                text=hello_msg, height=text_size,
-                                wrapWidth=screen_width, color=u'black',
-                                alignHoriz='center', alignVert='center')
-    hello_msg.draw()
-    win.flip()
-    key = event.waitKeys(keyList=['f7', 'return', 'space'])
-    if key == ['f7']:
-        exit(0)
-    win.flip()
 
 
 def draw_fixation(win, fixation, config):
@@ -169,6 +146,11 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
     resp_clock = core.Clock()
 
     for block in blocks:
+        all_reactions_times = 0.
+        no_reactions = 0.
+        answers_correctness = 0.
+        stopped_trials = 0.
+        not_stopped_trials = 0.
         for trial in block['trials']:
             if trial['stop'] is not None:
                 # stop_show_start = int(round(stops_times[trial['stop'][1]] * frames_per_sec))
@@ -205,10 +187,38 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, port, tri
                              'RE_time': reaction_time, 'ST_name': None, 'ST_wait_time': None})
             trial_number += 1
 
+            # block info
+            if reaction_time is not None:
+                all_reactions_times += reaction_time
+            else:
+                no_reactions += 1
+
+            if trial['stop'] is not None:
+                if reaction_time is not None:
+                    not_stopped_trials += 1
+                else:
+                    stopped_trials += 1
+            
             # update stops_times
             stops_times = update_stops_times(trial=trial, config=config, response=response, stops_times=stops_times)
 
+        try:
+            print len(block['trials']), no_reactions
+            all_reactions_times /= (len(block['trials']) - no_reactions)
+        except:
+            all_reactions_times = 'No answers!'
+        try:
+            stopped_ratio = stopped_trials / (not_stopped_trials + stopped_trials)
+        except:
+            stopped_ratio = 'No stops!'
+
+        break_extra_info = break_info(show_answers_correctness=config['Show_answers_correctness'], 
+                                      show_response_time=config['Show_response_time'],
+                                      show_stopped_ratio=config['Show_stopped_ratio'],
+                                      answers_correctness=str(answers_correctness),
+                                      response_time=str(all_reactions_times),
+                                      stopped_ratio=str(stopped_ratio))
         show_info(win=win, file_name=block['text_after_block'], text_size=config['Text_size'],
-                  screen_width=screen_res['width'])
+                  screen_width=screen_res['width'], insert=break_extra_info)
 
     return data, TRIGGERS_LIST

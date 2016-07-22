@@ -6,9 +6,10 @@ from classes.load_data import load_data, load_config
 from classes.screen import create_win
 from classes.experiment_info import experiment_info
 from classes.ophthalmic_procedure import ophthalmic_procedure
-from classes.show import show_info, show
+from classes.show import show
 from classes.save_data import save_beh, save_triggers
 from classes.triggers import create_eeg_port, create_nirs_dev
+from classes.show_info import show_info
 
 import os
 
@@ -53,7 +54,8 @@ def run():
     if config['Ophthalmic_procedure']:
         trigger_no, triggers_list = ophthalmic_procedure(win=win, send_triggers=config['Send_EEG_trigg'],
                                                          screen_res=screen_res, frames_per_sec=frames_per_sec,
-                                                         port=port, trigger_no=trigger_no, triggers_list=triggers_list)
+                                                         port=port, trigger_no=trigger_no, triggers_list=triggers_list,
+                                                         text_size=config['Text_size'])
 
     # Instruction
     instructions = sorted([f for f in os.listdir('messages') if f.startswith('instruction')])
@@ -86,7 +88,7 @@ run()
 # TODO: przetestowac triggery nirsowe
 
 # TODO: loggi
-# TODO: informacje w przerwach
+# TODO: poprawne odpowiedzi w przerwach
 
 # TODO: weryfikacja configu
 

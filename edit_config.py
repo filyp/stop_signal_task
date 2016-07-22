@@ -17,7 +17,9 @@ CONFIG_KEYS = [
     # Triggers info
     'Ophthalmic_procedure', 'Send_EEG_trigg', 'Send_Nirs_trigg',
     # View info
-    'Text_size', 'Fix_time', 'Break_between_fix_and_arrow', 'Screen_color'
+    'Text_size', 'Fix_time', 'Break_between_fix_and_arrow', 'Screen_color',
+    # Break info
+    'Show_answers_correctness', 'Show_response_time', 'Show_stopped_ratio'
 ]
 
 
@@ -46,10 +48,15 @@ def main():
     my_dlg.addField('Send_Nirs_trigg', choices=['False', 'True'])
 
     my_dlg.addText('View info')
-    my_dlg.addField('Text_size', 1)
+    my_dlg.addField('Text_size', 40)
     my_dlg.addField('Fix_time', 1)
     my_dlg.addField('Break_between_fix_and_arrow', 1)
-    my_dlg.addField('Screen_color', 1)
+    my_dlg.addField('Screen_color', 'Gainsboro')
+
+    my_dlg.addText('Break info')
+    my_dlg.addField('Show_answers_correctness', choices=['False', 'True'])
+    my_dlg.addField('Show_response_time', choices=['False', 'True'])
+    my_dlg.addField('Show_stopped_ratio', choices=['False', 'True'])
 
     my_dlg.show()
     if not my_dlg.OK:
