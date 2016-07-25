@@ -3,7 +3,7 @@ import time
 import random
 import pygame
 
-from classes.show_info import show_info, break_info
+from classes.show_info import show_info, break_info, prepare_buttons_info
 from classes.check_exit import check_exit
 from classes.triggers import prepare_trigger, TriggerTypes, send_trigger, prepare_trigger_name
 
@@ -246,12 +246,16 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
         except:
             stopped_ratio = 'No stops!'
 
+        keys_mapping = prepare_buttons_info(config['Keys'])
+
         break_extra_info = break_info(show_answers_correctness=config['Show_answers_correctness'],
                                       show_response_time=config['Show_response_time'],
                                       show_stopped_ratio=config['Show_stopped_ratio'],
+                                      show_keys_mapping=config['Show_keys_mapping'],
                                       answers_correctness=str(answers_correctness) + '%',
                                       response_time=str(all_reactions_times) + 's',
-                                      stopped_ratio=str(stopped_ratio) + '%')
+                                      stopped_ratio=str(stopped_ratio) + '%',
+                                      keys_mapping=keys_mapping)
         show_info(win=win, file_name=block['text_after_block'], text_size=config['Text_size'],
                   screen_width=screen_res['width'], insert=break_extra_info)
 

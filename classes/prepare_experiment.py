@@ -97,3 +97,15 @@ def create_stops_times_dict(stops, start_wait_to_stop):
     for stop in stops:
         stops_times[stop[1]] = start_wait_to_stop
     return stops_times
+
+
+def randomize_buttons(old_dict):
+    buttons = list(set(old_dict.values()))
+    buttons_rand = list(set(old_dict.values()))
+    random.shuffle(buttons_rand)
+    new_dict = dict()
+    for key in old_dict:
+        idx = buttons.index(old_dict[key])
+        new_dict[key] = buttons_rand[idx]
+
+    return new_dict

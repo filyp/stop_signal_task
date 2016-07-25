@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from classes.prepare_experiment import prepare_trials, create_stops_times_dict
+from classes.prepare_experiment import prepare_trials, create_stops_times_dict, randomize_buttons
 from classes.load_data import load_data, load_config
 from classes.screen import create_win
 from classes.experiment_info import experiment_info
@@ -9,7 +9,7 @@ from classes.ophthalmic_procedure import ophthalmic_procedure
 from classes.show import show
 from classes.save_data import save_beh, save_triggers
 from classes.triggers import create_eeg_port, create_nirs_dev
-from classes.show_info import show_info
+from classes.show_info import show_info, prepare_buttons_info
 from edit_config import config_verification
 
 import os
@@ -53,6 +53,11 @@ def run():
                                                       arrows=arrows)
 
     stops_times = create_stops_times_dict(stops=stops, start_wait_to_stop=config['Start_wait_to_stop'])
+
+    # Keys randomization
+    if config['Keys_randomization']:
+        config['Keys'] = randomize_buttons(config['Keys'])
+
     # Run experiment
     # Ophthalmic procedure
     if config['Ophthalmic_procedure']:
@@ -63,10 +68,11 @@ def run():
                                                          triggers_list=triggers_list, text_size=config['Text_size'])
 
     # Instruction
+    buttons_info = prepare_buttons_info(config['Keys'])
     instructions = sorted([f for f in os.listdir('messages') if f.startswith('instruction')])
     for instruction in instructions:
         show_info(win=win, file_name=os.path.join('messages', instruction), text_size=config['Text_size'],
-                  screen_width=screen_res['width'])
+                  screen_width=screen_res['width'], insert=buttons_info)
 
     # Training
     show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,

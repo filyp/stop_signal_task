@@ -21,7 +21,9 @@ CONFIG_KEYS = [
     # View info
     'Text_size', 'Fix_time', 'Break_between_fix_and_arrow', 'Screen_color',
     # Break info
-    'Show_answers_correctness', 'Show_response_time', 'Show_stopped_ratio'
+    'Show_answers_correctness', 'Show_response_time', 'Show_stopped_ratio', 'Show_keys_mapping',
+    # Key randomization
+    'Keys_randomization'
 ]
 
 
@@ -70,6 +72,10 @@ def main():
     my_dlg.addField('Show_answers_correctness', choices=['False', 'True'])
     my_dlg.addField('Show_response_time', choices=['False', 'True'])
     my_dlg.addField('Show_stopped_ratio', choices=['False', 'True'])
+    my_dlg.addField('Show_keys_mapping', choices=['False', 'True'])
+
+    my_dlg.addText('Keys randomization')
+    my_dlg.addField('Keys_randomization', choices=['False', 'True'])
 
     my_dlg.show()
     if not my_dlg.OK:
