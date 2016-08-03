@@ -95,9 +95,6 @@ def run():
 
 run()
 
-
-# TODO: przetestowac triggery nirsowe
-
 # TODO: loggi
 
 # TODO: dokumenatcja
