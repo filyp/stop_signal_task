@@ -11,6 +11,7 @@ from classes.check_exit import check_exit
 from classes.triggers import prepare_trigger, TriggerTypes, send_trigger, prepare_trigger_name
 
 SYSTEM = None
+PLAYER = None
 
 PORT_EEG = None
 PORT_NIRS = None
@@ -28,7 +29,7 @@ def draw_fixation(win, fixation, config):
 
 
 def start_stimulus(win, stimulus, send_eeg_triggers, send_nirs_triggers):
-    global TRIGGER_NO, SYSTEM
+    global TRIGGER_NO, SYSTEM, PLAYER
 
     if stimulus[0] == 'image':
         stimulus[2].setAutoDraw(True)
@@ -52,8 +53,11 @@ def start_stimulus(win, stimulus, send_eeg_triggers, send_nirs_triggers):
             pygame.mixer.music.play()
         elif 'Windows' in SYSTEM:
             sound = pyglet.media.load(stimulus[2])
-            sound.play()
-        print 's'
+            PLAYER = pyglet.media.Player()
+            PLAYER.queue(sound)
+            win.flip()
+            PLAYER.play()
+
         send_trigger(port_eeg=PORT_EEG, port_nirs=PORT_NIRS, trigger_no=TRIGGER_NO,
                      send_eeg_triggers=send_eeg_triggers,
                      send_nirs_triggers=send_nirs_triggers)
@@ -63,7 +67,7 @@ def start_stimulus(win, stimulus, send_eeg_triggers, send_nirs_triggers):
 
 
 def stop_stimulus(stimulus):
-    global SYSTEM
+    global SYSTEM, PLAYER
     if stimulus[0] == 'image':
         stimulus[2].setAutoDraw(False)
 
@@ -74,6 +78,9 @@ def stop_stimulus(stimulus):
         if 'Linux' in SYSTEM:
             pygame.mixer.music.stop()
             pygame.quit()
+        elif 'Windows' in SYSTEM:
+            PLAYER.pause()
+            del PLAYER
     else:
         raise Exception("Problems with stop stimulus " + stimulus)
 
