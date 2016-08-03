@@ -3,10 +3,14 @@ import time
 import random
 import pygame
 import pyglet
+import platform
+
 
 from classes.show_info import show_info, break_info, prepare_buttons_info
 from classes.check_exit import check_exit
 from classes.triggers import prepare_trigger, TriggerTypes, send_trigger, prepare_trigger_name
+
+SYSTEM = None
 
 PORT_EEG = None
 PORT_NIRS = None
@@ -24,7 +28,7 @@ def draw_fixation(win, fixation, config):
 
 
 def start_stimulus(win, stimulus, send_eeg_triggers, send_nirs_triggers):
-    global TRIGGER_NO
+    global TRIGGER_NO, SYSTEM
 
     if stimulus[0] == 'image':
         stimulus[2].setAutoDraw(True)
@@ -41,16 +45,15 @@ def start_stimulus(win, stimulus, send_eeg_triggers, send_nirs_triggers):
                      send_nirs_triggers=send_nirs_triggers)
 
     elif stimulus[0] == 'sound':
-
-        sound = pyglet.media.load(stimulus[2])
-        #pygame.init()
-
-        #pygame.mixer.music.load(stimulus[2])
-
-        win.flip()
-        #pygame.mixer.music.play()
-        sound.play()
-
+        if 'Linux' in SYSTEM:
+            pygame.init()
+            pygame.mixer.music.load(stimulus[2])
+            win.flip()
+            pygame.mixer.music.play()
+        elif 'Windows' in SYSTEM:
+            sound = pyglet.media.load(stimulus[2])
+            sound.play()
+        print 's'
         send_trigger(port_eeg=PORT_EEG, port_nirs=PORT_NIRS, trigger_no=TRIGGER_NO,
                      send_eeg_triggers=send_eeg_triggers,
                      send_nirs_triggers=send_nirs_triggers)
@@ -60,6 +63,7 @@ def start_stimulus(win, stimulus, send_eeg_triggers, send_nirs_triggers):
 
 
 def stop_stimulus(stimulus):
+    global SYSTEM
     if stimulus[0] == 'image':
         stimulus[2].setAutoDraw(False)
 
@@ -67,8 +71,9 @@ def stop_stimulus(stimulus):
         stimulus[2].setAutoDraw(False)
 
     elif stimulus[0] == 'sound':
-        pygame.mixer.music.stop()
-        pygame.quit()
+        if 'Linux' in SYSTEM:
+            pygame.mixer.music.stop()
+            pygame.quit()
     else:
         raise Exception("Problems with stop stimulus " + stimulus)
 
@@ -154,7 +159,9 @@ def update_stops_times(trial, config, response, stops_times):
 
 def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_no, triggers_list,
          port_eeg=None, port_nirs=None):
-    global PORT_EEG, PORT_NIRS, TRIGGERS_LIST, TRIGGER_NO
+    global PORT_EEG, PORT_NIRS, TRIGGERS_LIST, TRIGGER_NO, SYSTEM
+    SYSTEM = platform.system()
+
     PORT_EEG = port_eeg
     PORT_NIRS = port_nirs
     TRIGGERS_LIST = triggers_list
