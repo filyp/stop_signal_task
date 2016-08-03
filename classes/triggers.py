@@ -51,8 +51,14 @@ def prepare_trigger(trigger_no, triggers_list, trigger_type, trigger_name=None):
 
 def send_trigger(trigger_no, port_eeg=None, port_nirs=None, send_eeg_triggers=False, send_nirs_triggers=False):
     if send_eeg_triggers:
-        port_eeg.setData(trigger_no)
-        time.sleep(0.01)
-        port_eeg.setData(0x00)
+        try:
+            port_eeg.setData(trigger_no)
+            time.sleep(0.01)
+            port_eeg.setData(0x00)
+        except:
+            pass
     if send_nirs_triggers:
-        port_nirs.activate_line(trigger_no)
+        try:
+            port_nirs.activate_line(trigger_no)
+        except:
+            pass

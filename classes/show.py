@@ -2,6 +2,7 @@ from psychopy import visual, event, core
 import time
 import random
 import pygame
+import pyglet
 
 from classes.show_info import show_info, break_info, prepare_buttons_info
 from classes.check_exit import check_exit
@@ -23,7 +24,7 @@ def draw_fixation(win, fixation, config):
 
 
 def start_stimulus(win, stimulus, send_eeg_triggers, send_nirs_triggers):
-    global TRIGGER_NO, TRIGGERS_LIST
+    global TRIGGER_NO
 
     if stimulus[0] == 'image':
         stimulus[2].setAutoDraw(True)
@@ -40,13 +41,20 @@ def start_stimulus(win, stimulus, send_eeg_triggers, send_nirs_triggers):
                      send_nirs_triggers=send_nirs_triggers)
 
     elif stimulus[0] == 'sound':
-        pygame.init()
-        pygame.mixer.music.load(stimulus[2])
+
+        sound = pyglet.media.load(stimulus[2])
+        #pygame.init()
+
+        #pygame.mixer.music.load(stimulus[2])
+
         win.flip()
-        pygame.mixer.music.play()
+        #pygame.mixer.music.play()
+        sound.play()
+
         send_trigger(port_eeg=PORT_EEG, port_nirs=PORT_NIRS, trigger_no=TRIGGER_NO,
                      send_eeg_triggers=send_eeg_triggers,
                      send_nirs_triggers=send_nirs_triggers)
+
     else:
         raise Exception("Problems with start stimulus " + stimulus)
 
