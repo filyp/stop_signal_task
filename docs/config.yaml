@@ -1,6 +1,6 @@
 Arrow_show_time: 0.1
-Break_between_fix_and_arrow: 0
-Fix_time: 0.8
+Break_between_fixation_and_arrow: 0
+Fixation_show_time: 0.8
 Keys: {L: lctrl, R: rctrl}
 Keys_randomization: false
 Number_of_experiment_blocks: 3

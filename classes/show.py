@@ -22,7 +22,7 @@ TRIGGER_NO = 0
 def draw_fixation(win, fixation, config):
     fixation.setAutoDraw(True)
     win.flip()
-    time.sleep(config['Fix_time'])
+    time.sleep(config['Fixation_show_time'])
     fixation.setAutoDraw(False)
     check_exit()
     win.flip()
@@ -205,7 +205,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
             draw_fixation(win=win, fixation=fixation, config=config)
 
             # break between fixation and arrow
-            time.sleep(config['Break_between_fix_and_arrow'])
+            time.sleep(config['Break_between_fixation_and_arrow'])
             check_exit()
 
             # arrow, stop and resp
