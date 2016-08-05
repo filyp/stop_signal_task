@@ -4,11 +4,11 @@ Fix_time: 1
 Keys: {1_L: lctrl, 2_R: rctrl}
 Keys_randomization: true
 Number_of_experiment_blocks: 1
-Number_of_experiment_trials: 3
+Number_of_experiment_trials: 20
 Number_of_training_trials: 0
 Observer: Mis
 Ophthalmic_procedure: false
-Percent_of_trials_with_stop: 25
+Percent_of_trials_with_stop: 50
 Possible_wait_to_stop: [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1]
 Resp_time: 2
 Rest_time: 1
