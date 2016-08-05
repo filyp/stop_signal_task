@@ -95,7 +95,6 @@ def run():
 
 run()
 
-# TODO: beh to csv
 # TODO: loggi
 # TODO: edit_config ma wczytywac konfiguracje
 # TODO: dokumenatcja

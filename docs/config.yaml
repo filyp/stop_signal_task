@@ -2,10 +2,10 @@ Arrow_show_time: 0.5
 Break_between_fix_and_arrow: 0
 Fix_time: 1
 Keys: {1_L: lctrl, 2_R: rctrl}
-Keys_randomization: false
-Number_of_experiment_blocks: 2
-Number_of_experiment_trials: 12
-Number_of_training_trials: 4
+Keys_randomization: true
+Number_of_experiment_blocks: 1
+Number_of_experiment_trials: 3
+Number_of_training_trials: 0
 Observer: Mis
 Ophthalmic_procedure: false
 Percent_of_trials_with_stop: 25
@@ -16,10 +16,10 @@ Rest_time_jitter: 0.1
 Screen_color: Gainsboro
 Send_EEG_trigg: false
 Send_Nirs_trigg: false
-Show_answers_correctness: false
-Show_keys_mapping: false
-Show_response_time: false
-Show_stopped_ratio: false
+Show_answers_correctness: true
+Show_keys_mapping: true
+Show_response_time: true
+Show_stopped_ratio: true
 Start_wait_to_stop: 1
 Stop_show_time: 1
 Text_size: 40
