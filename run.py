@@ -77,7 +77,7 @@ def run():
     # Training
     show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
          blocks=training_block, stops_times=stops_times, trigger_no=trigger_no,
-         triggers_list=triggers_list)
+         triggers_list=list())
 
     # Experiment
     beh, triggers_list = show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
@@ -95,6 +95,8 @@ def run():
 
 run()
 
+# TODO: beh to csv
 # TODO: loggi
-
+# TODO: edit_config ma wczytywac konfiguracje
 # TODO: dokumenatcja
+# TODO: weryfikacja SSD - trening modyfikuje SSD

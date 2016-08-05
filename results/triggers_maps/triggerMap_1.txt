@@ -1,15 +1,17 @@
-1:GO_image_2_R_image_47MN_1_-
-2:ST_image_2_R_image_47MN_1_-
-3:GO_image_1_L_-_-_-_-
-4:GO_image_1_L_image_48MN_1_-
-5:ST_image_1_L_image_48MN_1_-
-6:GO_image_1_L_-_-_-_-
-7:GO_image_2_R_text_run_1_-
-8:ST_image_2_R_text_run_1_-
-1:GO_image_2_R_-_-_-_-
-2:GO_image_2_R_sound_Sleep Away_1_-
-3:ST_image_2_R_sound_Sleep Away_1_-
-4:GO_image_1_L_-_-_-_-
-5:GO_image_1_L_sound_2_1_-
-6:ST_image_1_L_sound_2_1_-
-7:GO_image_2_R_-_-_-_-
+1:GO*image*1_L*-*-*-*rctrl
+2:RE*image*1_L*-*-*-*rctrl
+3:GO*image*1_L*-*-*-*rctrl
+4:RE*image*1_L*-*-*-*rctrl
+5:GO*image*1_L*text*run*1*-
+6:ST*image*1_L*text*run*1*-
+7:GO*image*2_R*-*-*-*-
+8:GO*image*1_L*-*-*-*-
+1:GO*image*2_R*sound*2*1*-
+2:ST*image*2_R*sound*2*1*-
+3:GO*image*2_R*-*-*-*-
+4:GO*image*2_R*-*-*-*-
+5:GO*image*2_R*-*-*-*-
+6:GO*image*1_L*-*-*-*-
+7:GO*image*1_L*sound*1*1*-
+8:ST*image*1_L*sound*1*1*-
+1:GO*image*2_R*-*-*-*-

@@ -1,11 +1,13 @@
-Nr,GO_type,GO_name,RE_key,RE_true,RE_time,ST_type,ST_name,ST_wait_time
-1,image,2_R,,lctrl,,image,47MN,1
-2,image,1_L,,rctrl,,,,
-3,image,1_L,,rctrl,,image,48MN,1
-4,image,1_L,,rctrl,,,,
-5,image,2_R,,lctrl,,text,run,1
-6,image,2_R,,lctrl,,,,
-7,image,2_R,,lctrl,,sound,Sleep Away,1
-8,image,1_L,,rctrl,,,,
-9,image,1_L,,rctrl,,sound,2,1
-10,image,2_R,,lctrl,,,,
+Nr,GO_type,GO_name,RE_key,RE_true,RE_time,ST_type,ST_name,ST_wait_time
+1,image,1_L,rctrl,lctrl,0.883389949798584,,,
+2,image,1_L,rctrl,lctrl,0.3835468292236328,,,
+3,image,1_L,,lctrl,,text,run,1
+4,image,2_R,,rctrl,,,,
+5,image,1_L,,lctrl,,,,
+6,image,2_R,,rctrl,,sound,2,1
+7,image,2_R,,rctrl,,,,
+8,image,2_R,,rctrl,,,,
+9,image,2_R,,rctrl,,,,
+10,image,1_L,,lctrl,,,,
+11,image,1_L,,lctrl,,sound,1,1
+12,image,2_R,,rctrl,,,,
