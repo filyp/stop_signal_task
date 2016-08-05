@@ -100,3 +100,4 @@ run()
 # TODO: loggi
 # TODO: edit_config ma wczytywac konfiguracje
 # TODO: dokumenatcja
+# TODO: zmienic nazwe fix_time
