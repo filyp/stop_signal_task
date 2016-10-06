@@ -1,5 +1,30 @@
 # SST - Zadanie z sygnałem STOP
 
+### Przygotowanie eksperymentu
+
+<pre>
+Aby przygotowac eksperyment wykonaj pokolei następujące kroki:
+1) Bodźce
+    * Wszystkie bodźce go i stop należy wgrać do odpowiednich folderów (patrz "Struktura procedury")
+2) Config
+    * Config jest ustalany raz przed cała sesją eksperymentalną i nie powinien byc zmieniany w jej trakcie.
+    * Ustawianie configu odbywa sie w dwóch krokach (pierwszy można pominąć, ale ułatwia on konfigurację):
+        a) Uruchomienie programu "edit_config.py"
+        -------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!------------------------------
+        b) Edycja pliku "congig.yaml" z folderu "docs
+        ---------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------------
+3) Uruchamianie
+    * Gdy mamy poprawnie przygotowana procedurę dla każdej osoby badanej wystarczy uruchomic program "run.py"
+    * Po uruchomieniu wyświetli sie okienko, w którym trzeba wpisać:
+        @ ID - ID osoby badanej (według zasad ustalonych w laboratorium)
+        @ Age - wiek osoby badanej
+        @ Sex - płeć osoby badanej
+        @ Observer - w tym miejscu można wpisać nazwę osoby przeprowadzającej badania (jeżeli inna niz w configu
+    * Gdy wpiszemy powyższe dane i nacisniemy przycisk OK procedura się uruchomi.
+    * Procedure można wyłączyć w dowolnej chwili klawiszem "F7".
+    <font color="red">* UWAGA: dane zapisują się tylko i wyłącznie na koniec procedury. Jeżeli z jakiegokolwiek powodu procedura zostanie przerwana wszystkie dane zostana utracone!</font>
+</pre>
+
 ### Struktura procedury
 
 <pre>
@@ -68,24 +93,4 @@ Procedura zawiera nastepujące foldery:
 6) stops
     * Zawiera pliki z bodźcami stop.
     * Analogicznie do folderu arrows.
-</pre>
-
-
-### Przygotowanie eksperymentu
-
-<pre>
-Aby przygotowac eksperyment wykonaj pokolei następujące kroki:
-1) Bodźce
-    * Wszystkie bodźce (GO i ST) należy wgrać do odpowiednich folderów (patrz "Struktura procedury")
-2) Config
-    * Config jest ustalany raz przed cała sesją eksperymentalną i nie powinien byc zmieniany w jej trakcie.
-    * Ustawianie configu odbywa sie w dwóch krokach (pierwszy można pominąć, ale ułatwia on konfigurację):
-        a) Uruchomienie programu "edit_config.py"
-        -------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!------------------------------
-        b) Edycja pliku "congig.yaml" z folderu "docs
-        ---------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------------
-3) Uruchamianie
-    * Gdy mamy poprawnie przygotowana procedurę dla każdej osoby badanej wystarczy uruchomic program "run.py"
-    
-
 </pre>

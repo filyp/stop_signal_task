@@ -3,8 +3,8 @@ Break_between_fixation_and_arrow: 0
 Fixation_show_time: 0.8
 Keys: {L: lctrl, R: rctrl}
 Keys_randomization: false
-Number_of_experiment_blocks: 3
-Number_of_experiment_trials: 200
+Number_of_experiment_blocks: 1
+Number_of_experiment_trials: 4
 Number_of_training_trials: 0
 Observer: MS
 Ophthalmic_procedure: false
@@ -14,7 +14,7 @@ Resp_time: 1
 Rest_time: 0.6
 Rest_time_jitter: 0.1
 Screen_color: Gainsboro
-Send_EEG_trigg: true
+Send_EEG_trigg: false
 Send_Nirs_trigg: false
 Show_answers_correctness: true
 Show_keys_mapping: false
