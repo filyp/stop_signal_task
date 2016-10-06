@@ -1,9 +1,9 @@
 # SST - Zadanie z sygnałem STOP
 
-### Zawartość procedury
+### Struktura procedury
 
 <pre>
-Procedura zawiera nastepujące foldery
+Procedura zawiera nastepujące foldery:
 1) arrows
     * Zawiera pliki z bodźcami GO.
     * Dostępne formaty plików:
@@ -68,4 +68,24 @@ Procedura zawiera nastepujące foldery
 6) stops
     * Zawiera pliki z bodźcami stop.
     * Analogicznie do folderu arrows.
+</pre>
+
+
+### Przygotowanie eksperymentu
+
+<pre>
+Aby przygotowac eksperyment wykonaj pokolei następujące kroki:
+1) Bodźce
+    * Wszystkie bodźce (GO i ST) należy wgrać do odpowiednich folderów (patrz "Struktura procedury")
+2) Config
+    * Config jest ustalany raz przed cała sesją eksperymentalną i nie powinien byc zmieniany w jej trakcie.
+    * Ustawianie configu odbywa sie w dwóch krokach (pierwszy można pominąć, ale ułatwia on konfigurację):
+        a) Uruchomienie programu "edit_config.py"
+        -------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!------------------------------
+        b) Edycja pliku "congig.yaml" z folderu "docs
+        ---------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------------
+3) Uruchamianie
+    * Gdy mamy poprawnie przygotowana procedurę dla każdej osoby badanej wystarczy uruchomic program "run.py"
+    
+
 </pre>
