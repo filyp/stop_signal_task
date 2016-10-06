@@ -22,7 +22,7 @@ TRIGGER_NO = 0
 def draw_fixation(win, fixation, config):
     fixation.setAutoDraw(True)
     win.flip()
-    time.sleep(config['Fix_time'])
+    time.sleep(config['Fixation_show_time'])
     fixation.setAutoDraw(False)
     check_exit()
     win.flip()
@@ -154,13 +154,13 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
 
 def update_stops_times(trial, config, response, stops_times):
     if trial['stop'] is not None:
-        wait_time_index = config['Possible_wait_to_stop'].index(stops_times[trial['stop'][1]])
+        wait_time_index = config['Possible_wait_to_stop'].index(stops_times[trial['stop'][1].split('_')[0]])
         if response is None:
             if wait_time_index != len(config['Possible_wait_to_stop']) - 1:
-                stops_times[trial['stop'][1]] = config['Possible_wait_to_stop'][wait_time_index + 1]
+                stops_times[trial['stop'][1].split('_')[0]] = config['Possible_wait_to_stop'][wait_time_index + 1]
         else:
             if wait_time_index != 0:
-                stops_times[trial['stop'][1]] = config['Possible_wait_to_stop'][wait_time_index - 1]
+                stops_times[trial['stop'][1].split('_')[0]] = config['Possible_wait_to_stop'][wait_time_index - 1]
     return stops_times
 
 
@@ -193,7 +193,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
         not_stopped_trials = 0.
         for trial in block['trials']:
             if trial['stop'] is not None:
-                real_stop_show_start = stops_times[trial['stop'][1]]
+                real_stop_show_start = stops_times[trial['stop'][1].split('_')[0]]
                 stop_show_start = real_stop_show_start - one_frame_time
                 stop_show_end = stop_show_start + config['Stop_show_time']
             else:
@@ -205,7 +205,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
             draw_fixation(win=win, fixation=fixation, config=config)
 
             # break between fixation and arrow
-            time.sleep(config['Break_between_fix_and_arrow'])
+            time.sleep(config['Break_between_fixation_and_arrow'])
             check_exit()
 
             # arrow, stop and resp
@@ -224,7 +224,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
                              'GO_type': trial['arrow'][0], 'GO_name': trial['arrow'][1],
                              'RE_key': response, 'RE_time': reaction_time, 'RE_true': config['Keys'][trial['arrow'][1]],
                              'ST_type': trial['stop'][0], 'ST_name': trial['stop'][1],
-                             'ST_wait_time': stops_times[trial['stop'][1]]})
+                             'ST_wait_time': stops_times[trial['stop'][1].split('_')[0]]})
             else:
                 data.append({'Nr': trial_number,
                              'GO_type': trial['arrow'][0], 'GO_name': trial['arrow'][1],

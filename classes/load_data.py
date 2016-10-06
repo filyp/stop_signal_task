@@ -4,7 +4,7 @@ import codecs
 from os.path import join
 import yaml
 
-possible_images_format = ('bmp', 'jpg', 'png')
+possible_images_format = ('bmp', 'jpg', 'png', 'gif')
 possible_audio_format = ('mp3', 'au', 'mp2', 'wav', 'wma', 'ogg')
 
 

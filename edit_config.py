@@ -19,7 +19,7 @@ CONFIG_KEYS = [
     # Triggers info
     'Ophthalmic_procedure', 'Send_EEG_trigg', 'Send_Nirs_trigg',
     # View info
-    'Text_size', 'Fix_time', 'Break_between_fix_and_arrow', 'Screen_color',
+    'Text_size', 'Fixation_show_time', 'Break_between_fixation_and_arrow', 'Screen_color',
     # Break info
     'Show_answers_correctness', 'Show_response_time', 'Show_stopped_ratio', 'Show_keys_mapping',
     # Key randomization
@@ -64,8 +64,8 @@ def main():
 
     my_dlg.addText('View info')
     my_dlg.addField('Text_size', 40)
-    my_dlg.addField('Fix_time', 1)
-    my_dlg.addField('Break_between_fix_and_arrow', 1)
+    my_dlg.addField('Fixation_show_time', 1)
+    my_dlg.addField('Break_between_fixation_and_arrow', 1)
     my_dlg.addField('Screen_color', 'Gainsboro')
 
     my_dlg.addText('Break info')

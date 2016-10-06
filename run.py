@@ -13,6 +13,7 @@ from classes.show_info import show_info, prepare_buttons_info
 from edit_config import config_verification
 
 import os
+import copy
 
 # import cgitb
 # cgitb.enable(format="text")
@@ -53,6 +54,7 @@ def run():
                                                       arrows=arrows)
 
     stops_times = create_stops_times_dict(stops=stops, start_wait_to_stop=config['Start_wait_to_stop'])
+    stops_times_train = copy.copy(stops_times)
 
     # Keys randomization
     if config['Keys_randomization']:
@@ -76,8 +78,8 @@ def run():
 
     # Training
     show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
-         blocks=training_block, stops_times=stops_times, trigger_no=trigger_no,
-         triggers_list=triggers_list)
+         blocks=training_block, stops_times=stops_times_train, trigger_no=trigger_no,
+         triggers_list=list())
 
     # Experiment
     beh, triggers_list = show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
@@ -96,5 +98,5 @@ def run():
 run()
 
 # TODO: loggi
-
+# TODO: edit_config ma wczytywac konfiguracje
 # TODO: dokumenatcja
