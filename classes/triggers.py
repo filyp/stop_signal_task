@@ -29,13 +29,13 @@ def create_nirs_dev():
 
 
 def prepare_trigger_name(trial, stop_show_start=None):
-    name = "_{}_{}".format(trial['arrow'][0], trial['arrow'][1])
+    name = "*{}*{}".format(trial['arrow'][0], trial['arrow'][1])
     if trial['stop'] is not None:
-        name += '_{}_{}_{}'.format(trial['stop'][0], trial['stop'][1], stop_show_start)
+        name += '*{}*{}*{}'.format(trial['stop'][0], trial['stop'][1], stop_show_start)
     else:
-        name += '_-_-_-'
+        name += '*-*-*-'
     # for response
-    name += '_-'
+    name += '*-'
     return name
 
 
