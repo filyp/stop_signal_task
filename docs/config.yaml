@@ -1,10 +1,10 @@
 Arrow_show_time: 0.1
 Break_between_fixation_and_arrow: 0.0
 Fixation_show_time: 0.3
-Keys: {L: lalt, R: ralt}
+Keys: {L_L: lctrl, R_R: rctrl}
 Keys_randomization: true
 Number_of_experiment_blocks: 8
-Number_of_experiment_trials: 1080
+Number_of_experiment_trials: 80
 Number_of_training_trials: 20
 Observer: Patrycja
 Ophthalmic_procedure: true

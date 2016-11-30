@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from classes.prepare_experiment import prepare_trials, create_stops_times_dict, randomize_buttons
-from classes.load_data import load_data, load_config
+from classes.load_data import load_data, load_config, load_data_in_folders
 from classes.screen import create_win
 from classes.experiment_info import experiment_info
 from classes.ophthalmic_procedure import ophthalmic_procedure
@@ -43,8 +43,8 @@ def run():
     win, screen_res, frames_per_sec = create_win(screen_color=config['Screen_color'])
 
     # prepare experiment
-    stops = load_data(win=win, folder_name="stops", config=config, screen_res=screen_res)
-    arrows = load_data(win=win, folder_name="arrows", config=config, screen_res=screen_res)
+    stops = load_data_in_folders(win=win, folder_name="stops", config=config, screen_res=screen_res)
+    arrows = load_data_in_folders(win=win, folder_name="arrows", config=config, screen_res=screen_res)
 
     training_block, experiment_block = prepare_trials(number_of_blocks=config['Number_of_experiment_blocks'],
                                                       number_of_experiment_trials=config['Number_of_experiment_trials'],
