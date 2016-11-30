@@ -5,7 +5,6 @@ import pygame
 import pyglet
 import platform
 
-
 from classes.show_info import show_info, break_info, prepare_buttons_info
 from classes.check_exit import check_exit
 from classes.triggers import prepare_trigger, TriggerTypes, send_trigger, prepare_trigger_name
@@ -178,8 +177,8 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
 
     one_frame_time = 1.0 / frames_per_sec
 
-    arrow_show_time = config['Arrow_show_time'] - one_frame_time
-    resp_time = config['Resp_time'] - one_frame_time
+    arrow_show_time = config['Arrow_show_time']  # - one_frame_time
+    resp_time = config['Resp_time']  # - one_frame_time
 
     data = list()
     trial_number = 1
@@ -194,7 +193,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
         for trial in block['trials']:
             if trial['stop'] is not None:
                 real_stop_show_start = stops_times[trial['stop'][1].split('_')[0]]
-                stop_show_start = real_stop_show_start - one_frame_time
+                stop_show_start = real_stop_show_start  # - one_frame_time
                 stop_show_end = stop_show_start + config['Stop_show_time']
             else:
                 real_stop_show_start = None
