@@ -38,7 +38,7 @@ def load_data(win, folder_name, config, screen_res):
                         text = line.split(':')[1]
                         text = text.split('\n')[0]
                         word = visual.TextStim(win=win, antialias=True, font=u'Arial', text=text,
-                                               height=config['Text_size'], wrapWidth=screen_res['width'],
+                                               height=config['Text_stimulus_size'], wrapWidth=screen_res['width'],
                                                color=u'black', alignHoriz='center', alignVert='center')
                         data.append(('text', trigger_name, word))
             elif name[-3:] in possible_images_format:
@@ -78,7 +78,7 @@ def load_data_in_folders(win, folder_name, config, screen_res):
                             text = line.split(':')[1]
                             text = text.split('\n')[0]
                             word = visual.TextStim(win=win, antialias=True, font=u'Arial', text=text,
-                                                   height=config['Text_size'], wrapWidth=screen_res['width'],
+                                                   height=config['Text_stimulus_size'], wrapWidth=screen_res['width'],
                                                    color=u'black', alignHoriz='center', alignVert='center')
                             data.append(('text', folder + '_' + trigger_name, word))
                 elif name[-3:] in possible_images_format:

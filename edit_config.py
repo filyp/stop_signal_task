@@ -12,10 +12,11 @@ CONFIG_KEYS = [
     # Observer info
     'Observer',
     # Experiment length
-    'Number_of_training_trials', 'Number_of_experiment_blocks', 'Number_of_experiment_trials',
+    'Number_of_training_1_trials', 'Number_of_training_2_trials',
+    'Number_of_experiment_blocks', 'Number_of_experiment_trials',
     # Trial info
-    'Arrow_show_time', 'Percent_of_trials_with_stop', 'Start_wait_to_stop', 'Stop_show_time', 'Resp_time',
-    'Rest_time', 'Rest_time_jitter',
+    'Go_show_time', 'Percent_of_trials_with_stop', 'Start_wait_to_stop', 'Stop_show_time', 'Resp_time',
+    'Go_rest_time', 'Go_rest_time_jitter', 'Stop_rest_time', 'Stop_rest_time_jitter',
     # Triggers info
     'Ophthalmic_procedure', 'Send_EEG_trigg', 'Send_Nirs_trigg',
     # View info
@@ -34,7 +35,8 @@ def config_verification():
     for key in CONFIG_KEYS:
         assert key in config.keys(), 'No ' + key + ' in config'
 
-    assert config['Rest_time_jitter'] <= config['Rest_time'], 'Rest_time_jitter is longer than Rest_time'
+    assert config['Go_rest_time_jitter'] <= config['Go_rest_time'], 'Go_rest_time_jitter is longer than Go_rest_time'
+    assert config['Stop_rest_time_jitter'] <= config['Stop_rest_time'], 'Stop_rest_time_jitter is longer than Stop_rest_time'
     assert config['Number_of_experiment_blocks'] <= config['Number_of_experiment_trials'], 'More blocks than trials'
 
 

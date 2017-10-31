@@ -1,25 +1,29 @@
-Arrow_show_time: 0.1
+Go_show_time: 0.1
 Break_between_fixation_and_arrow: 0.0
-Fixation_show_time: 0.3
-Keys: {L_L: lctrl, R_R: rctrl}
+Fixation_show_time: 0.6
+Keys: {o: a, x: l}
 Keys_randomization: true
-Number_of_experiment_blocks: 8
-Number_of_experiment_trials: 80
-Number_of_training_trials: 20
+Number_of_experiment_blocks: 16
+Number_of_experiment_trials: 1286
+Number_of_training_1_trials: 20
+Number_of_training_2_trials: 36
 Observer: Patrycja
-Ophthalmic_procedure: true
-Percent_of_trials_with_stop: 25
+Ophthalmic_procedure: false
+Percent_of_trials_with_stop: 28
 Possible_wait_to_stop: [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]
 Resp_time: 1.0
-Rest_time: 0.2
-Rest_time_jitter: 0.1
-Screen_color: Gainsboro
+Go_rest_time: 1.15
+Go_rest_time_jitter: 0.15
+Stop_rest_time: 0.3
+Stop_rest_time_jitter: 0
+Screen_color: 000000
 Send_EEG_trigg: true
 Send_Nirs_trigg: false
 Show_answers_correctness: true
-Show_keys_mapping: true
+Show_keys_mapping: false
 Show_response_time: true
 Show_stopped_ratio: true
 Start_wait_to_stop: 0.15
-Stop_show_time: 0.1
+Stop_show_time: 1.0
 Text_size: 40
+Text_stimulus_size: 80

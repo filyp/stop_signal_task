@@ -28,12 +28,13 @@ def create_nirs_dev():
         raise Exception("Can't connect to NIRS")
 
 
-def prepare_trigger_name(trial, stop_show_start=None):
+def prepare_trigger_name(trial, correct_answer, stop_show_start=None):
     name = "*{}*{}".format(trial['arrow'][0], trial['arrow'][1])
     if trial['stop'] is not None:
         name += '*{}*{}*{}'.format(trial['stop'][0], trial['stop'][1], stop_show_start)
     else:
         name += '*-*-*-'
+    name += '*{}'.format(correct_answer)
     # for response
     name += '*-'
     return name

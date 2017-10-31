@@ -18,12 +18,12 @@ TRIGGERS_LIST = list()
 TRIGGER_NO = 0
 
 
-def draw_fixation(win, fixation, config):
+def draw_fixation(win, fixation, config, part_id, beh):
     fixation.setAutoDraw(True)
     win.flip()
     time.sleep(config['Fixation_show_time'])
     fixation.setAutoDraw(False)
-    check_exit()
+    check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST)
     win.flip()
 
 
@@ -85,17 +85,18 @@ def stop_stimulus(stimulus):
 
 
 def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end, stop_show_start, config,
-              real_stop_show_start):
+              real_stop_show_start, part_id, beh):
     global PORT_EEG, TRIGGER_NO, TRIGGERS_LIST
 
     reaction_time = None
     response = None
-    trigger_name = prepare_trigger_name(trial=trial, stop_show_start=real_stop_show_start)
+    correct_answer = config['Keys'][trial['arrow'][1]]
+    trigger_name = prepare_trigger_name(trial=trial, stop_show_start=real_stop_show_start, correct_answer=correct_answer)
     TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.GO, trigger_no=TRIGGER_NO,
                                                 triggers_list=TRIGGERS_LIST, trigger_name=trigger_name)
     start_stimulus(win=win, stimulus=trial['arrow'], send_eeg_triggers=config['Send_EEG_trigg'],
                    send_nirs_triggers=config['Send_Nirs_trigg'])
-    check_exit()
+    check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST)
     arrow_on = True
     stop_on = None
     event.clearEvents()
@@ -132,7 +133,7 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
                              send_nirs_triggers=config['Send_Nirs_trigg'])
             response = key[0]
             break
-        check_exit()
+        check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST)
         if change is False:
             win.flip()
 
@@ -142,6 +143,7 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
         stop_stimulus(stimulus=trial['stop'])
 
     # Add response to all trial triggers
+
     if response is not None:
         TRIGGERS_LIST[-1] = (TRIGGERS_LIST[-1][0], TRIGGERS_LIST[-1][1][:-1] + response)
         TRIGGERS_LIST[-2] = (TRIGGERS_LIST[-2][0], TRIGGERS_LIST[-2][1][:-1] + response)
@@ -164,7 +166,7 @@ def update_stops_times(trial, config, response, stops_times):
 
 
 def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_no, triggers_list,
-         port_eeg=None, port_nirs=None):
+         port_eeg=None, port_nirs=None, part_id=''):
     global PORT_EEG, PORT_NIRS, TRIGGERS_LIST, TRIGGER_NO, SYSTEM
     SYSTEM = platform.system()
 
@@ -175,9 +177,9 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
 
     fixation = visual.TextStim(win, color='black', text='+', height=2 * config['Text_size'])
 
-    one_frame_time = 1.0 / frames_per_sec
+    # one_frame_time = 1.0 / frames_per_sec
 
-    arrow_show_time = config['Arrow_show_time']  # - one_frame_time
+    arrow_show_time = config['Go_show_time']  # - one_frame_time
     resp_time = config['Resp_time']  # - one_frame_time
 
     data = list()
@@ -201,21 +203,25 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
                 stop_show_end = None
 
             # draw fixation
-            draw_fixation(win=win, fixation=fixation, config=config)
+            draw_fixation(win=win, fixation=fixation, config=config, part_id=part_id, beh=data)
 
             # break between fixation and arrow
             time.sleep(config['Break_between_fixation_and_arrow'])
-            check_exit()
+            check_exit(part_id=part_id, beh=data, triggers_list=TRIGGERS_LIST)
 
             # arrow, stop and resp
             reaction_time, response = run_trial(win=win, resp_clock=resp_clock, trial=trial, resp_time=resp_time,
                                                 arrow_show_time=arrow_show_time, stop_show_end=stop_show_end,
                                                 stop_show_start=stop_show_start, config=config,
-                                                real_stop_show_start=real_stop_show_start)
+                                                real_stop_show_start=real_stop_show_start, part_id=part_id, beh=data)
 
             # rest
-            jitter = (2 * random.random() - 1) * config['Rest_time_jitter']
-            time.sleep(config['Rest_time'] + jitter)
+            if response is not None:
+                jitter = (2 * random.random() - 1) * config['Go_rest_time_jitter']
+                time.sleep(config['Go_rest_time'] + jitter)
+            else:
+                jitter = (2 * random.random() - 1) * config['Stop_rest_time_jitter']
+                time.sleep(config['Stop_rest_time'] + jitter)
 
             # add data
             if trial['stop'] is not None:

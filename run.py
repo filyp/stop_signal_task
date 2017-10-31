@@ -42,16 +42,31 @@ def run():
     # screen
     win, screen_res, frames_per_sec = create_win(screen_color=config['Screen_color'])
 
+    # prepare training
+    stops = load_data(win=win, folder_name="stops_tren", config=config, screen_res=screen_res)
+    arrows = load_data(win=win, folder_name="arrows", config=config, screen_res=screen_res)
+
+    training_block_1 = prepare_trials(number_of_blocks=1, stops=stops, arrows=arrows,
+                                      number_of_experiment_trials=config['Number_of_training_1_trials'],
+                                      percent_of_trials_with_stop=0,
+                                      messages=[os.path.join('messages', 'training_end_1.txt')])
+
+    training_block_2 = prepare_trials(number_of_blocks=1, stops=stops, arrows=arrows,
+                                      number_of_experiment_trials=config['Number_of_training_2_trials'],
+                                      percent_of_trials_with_stop=config['Percent_of_trials_with_stop'],
+                                      messages=[os.path.join('messages', 'training_end_2.txt')])
+
+    training_block = training_block_1 + training_block_2
+
     # prepare experiment
     stops = load_data_in_folders(win=win, folder_name="stops", config=config, screen_res=screen_res)
-    arrows = load_data_in_folders(win=win, folder_name="arrows", config=config, screen_res=screen_res)
-
-    training_block, experiment_block = prepare_trials(number_of_blocks=config['Number_of_experiment_blocks'],
-                                                      number_of_experiment_trials=config['Number_of_experiment_trials'],
-                                                      number_of_training_trials=config['Number_of_training_trials'],
-                                                      stops=stops,
-                                                      percent_of_trials_with_stop=config['Percent_of_trials_with_stop'],
-                                                      arrows=arrows)
+    arrows = load_data(win=win, folder_name="arrows", config=config, screen_res=screen_res)
+    breaks = [os.path.join('messages', 'break{}.txt'.format(idx + 1)) for idx in
+              range(config['Number_of_experiment_blocks'])]
+    experiment_block = prepare_trials(number_of_blocks=config['Number_of_experiment_blocks'],
+                                      number_of_experiment_trials=config['Number_of_experiment_trials'],
+                                      percent_of_trials_with_stop=config['Percent_of_trials_with_stop'],
+                                      stops=stops, arrows=arrows, messages=breaks)
 
     stops_times = create_stops_times_dict(stops=stops, start_wait_to_stop=config['Start_wait_to_stop'])
     stops_times_train = copy.copy(stops_times)
@@ -79,12 +94,12 @@ def run():
     # Training
     show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
          blocks=training_block, stops_times=stops_times_train, trigger_no=trigger_no,
-         triggers_list=list())
+         triggers_list=list(), part_id=part_id)
 
     # Experiment
     beh, triggers_list = show(config=config, win=win, screen_res=screen_res, frames_per_sec=frames_per_sec,
                               blocks=experiment_block, stops_times=stops_times, port_eeg=port_eeg, port_nirs=port_nirs,
-                              trigger_no=trigger_no, triggers_list=triggers_list)
+                              trigger_no=trigger_no, triggers_list=triggers_list, part_id=part_id)
 
     # Save data
     save_beh(data=beh, name=part_id)

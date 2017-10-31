@@ -55,27 +55,9 @@ def blocks_creator(arrows_table, stop_table, num, breaks):
     return blocks
 
 
-def prepare_trials(number_of_blocks, number_of_experiment_trials, number_of_training_trials,
-                   stops, percent_of_trials_with_stop, arrows):
+def prepare_trials(number_of_blocks, number_of_experiment_trials, stops, percent_of_trials_with_stop, arrows, messages):
     assert percent_of_trials_with_stop <= 50, "procent stopow nie moze byc wiekszy od 50"
 
-    # prepare training
-    if number_of_training_trials:
-        training_arrows_table = prepare_arrows(arrows=arrows,
-                                               number_of_trials=number_of_training_trials)
-
-        training_stop_table = prepare_stops(stops=stops,
-                                            number_of_trials=number_of_training_trials,
-                                            percent_of_trials_with_stop=percent_of_trials_with_stop)
-
-        text_after_training = [os.path.join('messages', 'training_end.txt')]
-        training_block = blocks_creator(arrows_table=training_arrows_table,
-                                        stop_table=training_stop_table,
-                                        num=1,
-                                        breaks=text_after_training)
-    else:
-        training_block = []
-    # prepare experiment
     experiment_arrows_table = prepare_arrows(arrows=arrows,
                                              number_of_trials=number_of_experiment_trials)
 
@@ -83,13 +65,12 @@ def prepare_trials(number_of_blocks, number_of_experiment_trials, number_of_trai
                                           number_of_trials=number_of_experiment_trials,
                                           percent_of_trials_with_stop=percent_of_trials_with_stop)
 
-    breaks = [os.path.join('messages', 'break{}.txt'.format(idx + 1)) for idx in range(number_of_blocks)]
     experiment_block = blocks_creator(arrows_table=experiment_arrows_table,
                                       stop_table=experiment_stop_table,
                                       num=number_of_blocks,
-                                      breaks=breaks)
+                                      breaks=messages)
 
-    return training_block, experiment_block
+    return experiment_block
 
 
 def create_stops_times_dict(stops, start_wait_to_stop):
