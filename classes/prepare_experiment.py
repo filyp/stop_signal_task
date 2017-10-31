@@ -1,5 +1,4 @@
 import random
-import os
 
 
 def prepare_arrows(arrows, number_of_trials):
@@ -11,64 +10,59 @@ def prepare_arrows(arrows, number_of_trials):
     random.shuffle(rest_trials)
 
     arrows_table += rest_trials[:missing_trials]
-    random.shuffle(arrows_table)
+    # random.shuffle(arrows_table)
 
     arrows_table = [arrows[x] for x in arrows_table]
 
     return arrows_table
 
 
-def prepare_stops(stops, number_of_trials, percent_of_trials_with_stop=25):
+def prepare_stops(stops, number_of_trials, arrows_table, percent_of_trials_with_stop=25):
     number_of_stop_types = len(stops)
-    number_of_trials_with_stop = number_of_trials * percent_of_trials_with_stop / 100
+    number_of_trials_with_stop = int(round(number_of_trials * percent_of_trials_with_stop / 100.))
     stop_table = range(number_of_stop_types) * (number_of_trials_with_stop / number_of_stop_types)
-
     missing_trials = number_of_trials_with_stop % number_of_stop_types
     rest_trials = range(number_of_stop_types)
-    random.shuffle(rest_trials)
-
     stop_table += rest_trials[:missing_trials]
-
-    # create trials without stops
-    trials_without_stop = [None] * (number_of_trials - 2 * len(stop_table))
-    stop_table += trials_without_stop
-    random.shuffle(stop_table)
-
+    stop_table = sorted(stop_table)
+    trials_with_stop = [{'arrow': arrow, 'stop': stops[stop]} for arrow, stop in
+                        zip(arrows_table[:len(stop_table)], stop_table)]
+    random.shuffle(trials_with_stop)
+    arrows_table = arrows_table[len(stop_table):]
+    random.shuffle(arrows_table)
     # removing trials with stops with are one by one
     new_stop_table = []
-    for trial in stop_table:
+    for trial in trials_with_stop:
         new_stop_table.append(trial)
-        if trial >= 0:
-            new_stop_table.append(None)
-
-    new_stop_table = [stops[x] if x is not None else None for x in new_stop_table]
-
-    return new_stop_table
+        new_stop_table.append({'arrow': arrows_table[0], 'stop': None})
+        arrows_table = arrows_table[1:]
+    return new_stop_table, arrows_table
 
 
-def blocks_creator(arrows_table, stop_table, num, breaks):
-    assert len(stop_table) == len(arrows_table), "len(stop_table) != len(arrows_table)"
-    zipped = [{'arrow': arrow, 'stop': stop} for arrow, stop in zip(arrows_table, stop_table)]
-    blocks = [zipped[i:i + len(zipped) / num] for i in range(0, len(zipped), len(zipped) / num)]
+def blocks_creator(trials, num, breaks):
+    blocks = [trials[i:i + len(trials) / num] for i in range(0, len(trials), len(trials) / num)]
     # add instructions
     blocks = [{'trials': block, 'text_after_block': text} for block, text in zip(blocks, breaks)]
     return blocks
 
 
+def random_insert(lst, item):
+    lst.insert(random.randrange(len(lst) + 1), item)
+
+
 def prepare_trials(number_of_blocks, number_of_experiment_trials, stops, percent_of_trials_with_stop, arrows, messages):
     assert percent_of_trials_with_stop <= 50, "procent stopow nie moze byc wiekszy od 50"
 
-    experiment_arrows_table = prepare_arrows(arrows=arrows,
-                                             number_of_trials=number_of_experiment_trials)
+    arrows_table = prepare_arrows(arrows=arrows, number_of_trials=number_of_experiment_trials)
 
-    experiment_stop_table = prepare_stops(stops=stops,
-                                          number_of_trials=number_of_experiment_trials,
-                                          percent_of_trials_with_stop=percent_of_trials_with_stop)
+    trials, rest_arrows = prepare_stops(stops=stops, arrows_table=arrows_table,
+                                        number_of_trials=number_of_experiment_trials,
+                                        percent_of_trials_with_stop=percent_of_trials_with_stop)
 
-    experiment_block = blocks_creator(arrows_table=experiment_arrows_table,
-                                      stop_table=experiment_stop_table,
-                                      num=number_of_blocks,
-                                      breaks=messages)
+    for elem in rest_arrows:
+        random_insert(trials, {'arrow': elem, 'stop': None})
+
+    experiment_block = blocks_creator(trials=trials, num=number_of_blocks, breaks=messages)
 
     return experiment_block
 
