@@ -65,13 +65,15 @@ def start_stimulus(win, stimulus, send_eeg_triggers, send_nirs_triggers):
         raise Exception("Problems with start stimulus " + stimulus)
 
 
-def stop_stimulus(stimulus):
+def stop_stimulus(win, stimulus):
     global SYSTEM, PLAYER
     if stimulus[0] == 'image':
         stimulus[2].setAutoDraw(False)
+        win.flip()
 
     elif stimulus[0] == 'text':
         stimulus[2].setAutoDraw(False)
+        win.flip()
 
     elif stimulus[0] == 'sound':
         if 'Linux' in SYSTEM:
@@ -104,11 +106,9 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
     win.flip()
 
     while resp_clock.getTime() < resp_time:
-        change = False
         if arrow_on is True and resp_clock.getTime() > arrow_show_time:
-            stop_stimulus(stimulus=trial['arrow'])
+            stop_stimulus(win=win, stimulus=trial['arrow'])
             arrow_on = False
-            change = True
         if trial['stop'] is not None:
             if stop_on is None and resp_clock.getTime() > stop_show_start:
                 TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.ST, trigger_no=TRIGGER_NO,
@@ -116,11 +116,9 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
                 start_stimulus(win=win, stimulus=trial['stop'], send_eeg_triggers=config['Send_EEG_trigg'],
                                send_nirs_triggers=config['Send_Nirs_trigg'])
                 stop_on = True
-                change = True
             if stop_on is True and resp_clock.getTime() > stop_show_end:
-                stop_stimulus(stimulus=trial['stop'])
+                stop_stimulus(win=win, stimulus=trial['stop'])
                 stop_on = False
-                change = True
 
         key = event.getKeys(keyList=config['Keys'].values())
         if key:
@@ -134,14 +132,11 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
             response = key[0]
             break
         check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST)
-        if change is False:
-            win.flip()
 
     if arrow_on is True:
-        stop_stimulus(stimulus=trial['arrow'])
+        stop_stimulus(win=win, stimulus=trial['arrow'])
     if stop_on is True:
-        stop_stimulus(stimulus=trial['stop'])
-
+        stop_stimulus(win=win, stimulus=trial['stop'])
     # Add response to all trial triggers
 
     if response is not None:

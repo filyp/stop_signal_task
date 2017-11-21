@@ -43,7 +43,7 @@ def run():
     win, screen_res, frames_per_sec = create_win(screen_color=config['Screen_color'])
 
     # prepare training
-    stops = load_data(win=win, folder_name="stops_tren", config=config, screen_res=screen_res)
+    stops = load_data_in_folders(win=win, folder_name="stops_tren", config=config, screen_res=screen_res)
     arrows = load_data(win=win, folder_name="arrows", config=config, screen_res=screen_res)
 
     training_block_1 = prepare_trials(number_of_blocks=1, stops=stops, arrows=arrows,

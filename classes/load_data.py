@@ -82,7 +82,8 @@ def load_data_in_folders(win, folder_name, config, screen_res):
                                                    color=u'black', alignHoriz='center', alignVert='center')
                             data.append(('text', folder + '_' + trigger_name, word))
                 elif name[-3:] in possible_images_format:
-                    image = visual.ImageStim(win, image=path, interpolate=True)
+                    image = visual.ImageStim(win, image=path, size=config['Image_stimulus_size'],
+                                             pos=(0, 50), interpolate=True)
                     data.append(('image', folder + '_' + name.split('.')[0], image))
                 elif name[-3:] in possible_audio_format:
                     data.append(('sound', folder + '_' + name.split('.')[0], path))
