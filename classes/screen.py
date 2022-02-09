@@ -39,7 +39,7 @@ def get_screen_res():
 
 
 def get_frame_rate(win, legal_frame_rates=(60, 30)):
-    frame_rate = 30 #int(round(win.getActualFrameRate(nIdentical=30, nMaxFrames=200)))
+    frame_rate = int(round(win.getActualFrameRate(nIdentical=30, nMaxFrames=200)))
     logging.info("Detected framerate: {} frames per sec.".format(frame_rate))
     assert frame_rate in legal_frame_rates, 'Illegal frame rate.'
     return frame_rate

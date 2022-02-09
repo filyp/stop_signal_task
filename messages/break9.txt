@@ -1,2 +1,4 @@
-9
+Przerwa nr 9
 <--insert-->
+Za chwilę rozpocznie się sesja eksperymentalna nr 10.
+Naciśnij spację, żeby uruchomić badanie.

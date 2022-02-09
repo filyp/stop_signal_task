@@ -70,7 +70,7 @@ def prepare_trials(number_of_blocks, number_of_experiment_trials, stops, percent
 def create_stops_times_dict(stops, start_wait_to_stop):
     stops_times = dict()
     for stop in stops:
-        stops_times[stop[1].split('_')[0]] = start_wait_to_stop
+        stops_times[stop["WORD_EMO"]] = start_wait_to_stop
     return stops_times
 
 

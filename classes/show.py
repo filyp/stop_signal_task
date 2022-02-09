@@ -29,29 +29,28 @@ def draw_fixation(win, fixation, config, part_id, beh):
 
 def start_stimulus(win, stimulus, send_eeg_triggers, send_nirs_triggers):
     global TRIGGER_NO, SYSTEM, PLAYER
-
-    if stimulus[0] == 'image':
-        stimulus[2].setAutoDraw(True)
+    if stimulus["TYPE"] == 'image':
+        stimulus["STIM"].setAutoDraw(True)
         win.flip()
         send_trigger(port_eeg=PORT_EEG, port_nirs=PORT_NIRS, trigger_no=TRIGGER_NO,
                      send_eeg_triggers=send_eeg_triggers,
                      send_nirs_triggers=send_nirs_triggers)
 
-    elif stimulus[0] == 'text':
-        stimulus[2].setAutoDraw(True)
+    elif stimulus["TYPE"] == 'text':
+        stimulus["STIM"].setAutoDraw(True)
         win.flip()
         send_trigger(port_eeg=PORT_EEG, port_nirs=PORT_NIRS, trigger_no=TRIGGER_NO,
                      send_eeg_triggers=send_eeg_triggers,
                      send_nirs_triggers=send_nirs_triggers)
 
-    elif stimulus[0] == 'sound':
+    elif stimulus["TYPE"] == 'sound':
         if 'Linux' in SYSTEM:
             pygame.init()
-            pygame.mixer.music.load(stimulus[2])
+            pygame.mixer.music.load(stimulus["STIM"])
             win.flip()
             pygame.mixer.music.play()
         elif 'Windows' in SYSTEM:
-            sound = pyglet.media.load(stimulus[2])
+            sound = pyglet.media.load(stimulus["STIM"])
             PLAYER = pyglet.media.Player()
             PLAYER.queue(sound)
             win.flip()
@@ -65,17 +64,15 @@ def start_stimulus(win, stimulus, send_eeg_triggers, send_nirs_triggers):
         raise Exception("Problems with start stimulus " + stimulus)
 
 
-def stop_stimulus(win, stimulus):
+def stop_stimulus(stimulus):
     global SYSTEM, PLAYER
-    if stimulus[0] == 'image':
-        stimulus[2].setAutoDraw(False)
-        win.flip()
+    if stimulus["TYPE"] == 'image':
+        stimulus["STIM"].setAutoDraw(False)
 
-    elif stimulus[0] == 'text':
-        stimulus[2].setAutoDraw(False)
-        win.flip()
+    elif stimulus["TYPE"] == 'text':
+        stimulus["STIM"].setAutoDraw(False)
 
-    elif stimulus[0] == 'sound':
+    elif stimulus["TYPE"] == 'sound':
         if 'Linux' in SYSTEM:
             pygame.mixer.music.stop()
             pygame.quit()
@@ -92,32 +89,38 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
 
     reaction_time = None
     response = None
-    correct_answer = config['Keys'][trial['arrow'][1]]
-    trigger_name = prepare_trigger_name(trial=trial, stop_show_start=real_stop_show_start, correct_answer=correct_answer)
+    correct_answer = config['Keys'][trial['arrow']["NAME"]]
+    trigger_name = prepare_trigger_name(trial=trial, stop_show_start=real_stop_show_start,
+                                        correct_answer=correct_answer)
     TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.GO, trigger_no=TRIGGER_NO,
                                                 triggers_list=TRIGGERS_LIST, trigger_name=trigger_name)
-    start_stimulus(win=win, stimulus=trial['arrow'], send_eeg_triggers=config['Send_EEG_trigg'],
-                   send_nirs_triggers=config['Send_Nirs_trigg'])
+
     check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST)
     arrow_on = True
     stop_on = None
     event.clearEvents()
+
     win.callOnFlip(resp_clock.reset)
-    win.flip()
+    start_stimulus(win=win, stimulus=trial['arrow'], send_eeg_triggers=config['Send_EEG_trigg'],
+                   send_nirs_triggers=config['Send_Nirs_trigg'])
 
     while resp_clock.getTime() < resp_time:
+        change = False
         if arrow_on is True and resp_clock.getTime() > arrow_show_time:
-            stop_stimulus(win=win, stimulus=trial['arrow'])
+            stop_stimulus(stimulus=trial['arrow'])
             arrow_on = False
+            change = True
         if trial['stop'] is not None:
             if stop_on is None and resp_clock.getTime() > stop_show_start:
+
                 TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(trigger_type=TriggerTypes.ST, trigger_no=TRIGGER_NO,
                                                             triggers_list=TRIGGERS_LIST, trigger_name=trigger_name)
                 start_stimulus(win=win, stimulus=trial['stop'], send_eeg_triggers=config['Send_EEG_trigg'],
                                send_nirs_triggers=config['Send_Nirs_trigg'])
+
                 stop_on = True
             if stop_on is True and resp_clock.getTime() > stop_show_end:
-                stop_stimulus(win=win, stimulus=trial['stop'])
+                stop_stimulus(stimulus=trial['stop'])
                 stop_on = False
 
         key = event.getKeys(keyList=config['Keys'].values())
@@ -132,11 +135,14 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
             response = key[0]
             break
         check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST)
+        if change:
+            win.flip()
 
     if arrow_on is True:
-        stop_stimulus(win=win, stimulus=trial['arrow'])
+        stop_stimulus(stimulus=trial['arrow'])
     if stop_on is True:
-        stop_stimulus(win=win, stimulus=trial['stop'])
+        stop_stimulus(stimulus=trial['stop'])
+    win.flip()
     # Add response to all trial triggers
 
     if response is not None:
@@ -150,18 +156,18 @@ def run_trial(win, resp_clock, trial, resp_time, arrow_show_time, stop_show_end,
 
 def update_stops_times(trial, config, response, stops_times):
     if trial['stop'] is not None:
-        wait_time_index = config['Possible_wait_to_stop'].index(stops_times[trial['stop'][1].split('_')[0]])
+        wait_time_index = config['Possible_wait_to_stop'].index(stops_times[trial['stop']["WORD_EMO"]])
         if response is None:
             if wait_time_index != len(config['Possible_wait_to_stop']) - 1:
-                stops_times[trial['stop'][1].split('_')[0]] = config['Possible_wait_to_stop'][wait_time_index + 1]
+                stops_times[trial['stop']["WORD_EMO"]] = config['Possible_wait_to_stop'][wait_time_index + 1]
         else:
             if wait_time_index != 0:
-                stops_times[trial['stop'][1].split('_')[0]] = config['Possible_wait_to_stop'][wait_time_index - 1]
+                stops_times[trial['stop']["WORD_EMO"]] = config['Possible_wait_to_stop'][wait_time_index - 1]
     return stops_times
 
 
 def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_no, triggers_list,
-         port_eeg=None, port_nirs=None, part_id=''):
+         port_eeg=None, port_nirs=None, part_id='', data=[]):
     global PORT_EEG, PORT_NIRS, TRIGGERS_LIST, TRIGGER_NO, SYSTEM
     SYSTEM = platform.system()
 
@@ -172,12 +178,11 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
 
     fixation = visual.TextStim(win, color='black', text='+', height=2 * config['Text_size'])
 
-    # one_frame_time = 1.0 / frames_per_sec
+    one_frame_time = 1.0 / frames_per_sec
 
-    arrow_show_time = config['Go_show_time']  # - one_frame_time
+    arrow_show_time = config['Go_show_time'] - one_frame_time
     resp_time = config['Resp_time']  # - one_frame_time
 
-    data = list()
     trial_number = 1
     resp_clock = core.Clock()
 
@@ -189,8 +194,8 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
         not_stopped_trials = 0.
         for trial in block['trials']:
             if trial['stop'] is not None:
-                real_stop_show_start = stops_times[trial['stop'][1].split('_')[0]]
-                stop_show_start = real_stop_show_start  # - one_frame_time
+                real_stop_show_start = stops_times[trial['stop']["WORD_EMO"]]
+                stop_show_start = real_stop_show_start - one_frame_time
                 stop_show_end = stop_show_start + config['Stop_show_time']
             else:
                 real_stop_show_start = None
@@ -221,21 +226,23 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
             # add data
             if trial['stop'] is not None:
                 data.append({'Nr': trial_number,
-                             'GO_type': trial['arrow'][0], 'GO_name': trial['arrow'][1],
-                             'RE_key': response, 'RE_time': reaction_time, 'RE_true': config['Keys'][trial['arrow'][1]],
-                             'ST_type': trial['stop'][0], 'ST_name': trial['stop'][1],
-                             'ST_wait_time': stops_times[trial['stop'][1].split('_')[0]]})
+                             'GO_type': trial['arrow']["TYPE"], 'GO_name': trial['arrow']["NAME"],'RE_key': response,
+                             'RE_time': reaction_time, 'RE_true': config['Keys'][trial['arrow']["NAME"]],
+                             'ST_type': trial['stop']["TYPE"], 'ST_name': trial['stop']["WORD"],
+                             'ST_wait_time': stops_times[trial['stop']["WORD_EMO"]],
+                             "WORD_EMO": trial['stop']["WORD_EMO"]})
             else:
                 data.append({'Nr': trial_number,
-                             'GO_type': trial['arrow'][0], 'GO_name': trial['arrow'][1],
-                             'RE_key': response, 'RE_true': config['Keys'][trial['arrow'][1]], 'RE_time': reaction_time,
-                             'ST_type': None, 'ST_name': None, 'ST_wait_time': None})
+                             'GO_type': trial['arrow']["TYPE"], 'GO_name': trial['arrow']["NAME"],
+                             'RE_key': response, 'RE_true': config['Keys'][trial['arrow']["NAME"]],
+                             'RE_time': reaction_time, 'ST_type': None, 'ST_name': None, 'ST_wait_time': None,
+                             "WORD_EMO": None})
             trial_number += 1
 
             # break info
             if reaction_time is not None:
                 all_reactions_times += reaction_time
-                if response == config['Keys'][trial['arrow'][1]]:
+                if response == config['Keys'][trial['arrow']["NAME"]]:
                     answers_correctness += 1
             else:
                 if trial['stop'] is not None:
@@ -268,7 +275,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
         except:
             stopped_ratio = 'No stops!'
 
-        keys_mapping = prepare_buttons_info(config['Keys'])
+        keys_mapping = prepare_buttons_info(config['Keys'], config['Keys_description'])
 
         break_extra_info = break_info(show_answers_correctness=config['Show_answers_correctness'],
                                       show_response_time=config['Show_response_time'],
@@ -279,6 +286,7 @@ def show(config, win, screen_res, frames_per_sec, blocks, stops_times, trigger_n
                                       stopped_ratio=str(stopped_ratio) + '%',
                                       keys_mapping=keys_mapping)
         show_info(win=win, file_name=block['text_after_block'], text_size=config['Text_size'],
-                  screen_width=screen_res['width'], insert=break_extra_info)
+                  screen_width=screen_res['width'], insert=break_extra_info, triggers_list=triggers_list,
+                  part_name=part_id, data=data)
 
     return data, TRIGGERS_LIST

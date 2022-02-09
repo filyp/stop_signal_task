@@ -2,9 +2,10 @@ from psychopy import visual, event
 import os
 
 from classes.load_data import read_text_from_file
+from classes.save_data import save_beh, save_triggers
 
 
-def show_info(win, file_name, text_size, screen_width, insert=''):
+def show_info(win, file_name, text_size, screen_width, triggers_list, part_name, data, insert=''):
     """
     Clear way to show info message into screen.
     :param win:
@@ -23,6 +24,8 @@ def show_info(win, file_name, text_size, screen_width, insert=''):
     win.flip()
     key = event.waitKeys(keyList=['f7', 'return', 'space'])
     if key == ['f7']:
+        save_beh(data=data, name=part_name)
+        save_triggers(data=triggers_list, name=part_name)
         exit(0)
     win.flip()
 
@@ -45,7 +48,7 @@ def break_info(show_answers_correctness, show_response_time, show_stopped_ratio,
     return extra_info
 
 
-def prepare_buttons_info(dict_to_show):
+def prepare_buttons_info(dict_to_show, keys_text_mapping):
     new_dict = dict()
     for key in dict_to_show:
         key_type = key.split('_')[0]
@@ -53,5 +56,6 @@ def prepare_buttons_info(dict_to_show):
 
     info_to_show = ''
     for key in new_dict:
-        info_to_show += '{}: {}, '.format(key, new_dict[key])
-    return info_to_show[:-2]
+        info_to_show += '{} - {}\n'.format(key, keys_text_mapping[new_dict[key]])
+
+    return info_to_show[:-1]

@@ -10,8 +10,10 @@ def save_triggers(data, name):
 
 
 def save_beh(data, name):
+    print data
     with open(os.path.join('results', 'behavioral_data', 'beh_{}.csv'.format(name)), 'w') as csvfile:
-        fieldnames = ['Nr', 'GO_type', 'GO_name', 'RE_key', 'RE_true', 'RE_time', 'ST_type', 'ST_name', 'ST_wait_time']
+        fieldnames = ['Nr', 'GO_type', 'GO_name', 'RE_key', 'RE_true', 'RE_time',
+                      'ST_type', 'ST_name', 'ST_wait_time', 'WORD_EMO']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in data:
