@@ -2,15 +2,16 @@ import time
 
 
 class TriggerTypes(object):
-    BLINK = 'BLINK'
-    GO = 'GO'
-    ST = 'ST'
-    RE = 'RE'
+    BLINK = "BLINK"
+    GO = "GO"
+    ST = "ST"
+    RE = "RE"
 
 
 def create_eeg_port():
     try:
         import parallel
+
         port = parallel.Parallel()
         port.setData(0x00)
         return port
@@ -21,6 +22,7 @@ def create_eeg_port():
 def create_nirs_dev():
     try:
         import pyxid
+
         devices = pyxid.get_xid_devices()
         dev = devices[0]
         return dev
@@ -29,16 +31,20 @@ def create_nirs_dev():
 
 
 def prepare_trigger_name(trial, correct_answer, stop_show_start=None):
-    name = "*{}*{}".format(trial['arrow']["TYPE"], trial['arrow']["NAME"])
-    if trial['stop'] is not None:
-        name += "*{}*{}*{}*{}*".format(trial['stop']['WORD_TYPE'], trial['stop']['WORD_LIST'],
-                                       trial['stop']['WORD_EMO'], trial['stop']['WORD'])
+    name = "*{}*{}".format(trial["arrow"]["TYPE"], trial["arrow"]["NAME"])
+    if trial["stop"] is not None:
+        name += "*{}*{}*{}*{}*".format(
+            trial["stop"]["WORD_TYPE"],
+            trial["stop"]["WORD_LIST"],
+            trial["stop"]["WORD_EMO"],
+            trial["stop"]["WORD"],
+        )
         name += str(stop_show_start)
     else:
         name += "*-*-*-*-*-"
-    name += '*{}'.format(correct_answer)
+    name += "*{}".format(correct_answer)
     # for response
-    name += '*-'
+    name += "*-"
     return name
 
 
@@ -52,7 +58,9 @@ def prepare_trigger(trigger_no, triggers_list, trigger_type, trigger_name=None):
     return trigger_no, triggers_list
 
 
-def send_trigger(trigger_no, port_eeg=None, port_nirs=None, send_eeg_triggers=False, send_nirs_triggers=False):
+def send_trigger(
+    trigger_no, port_eeg=None, port_nirs=None, send_eeg_triggers=False, send_nirs_triggers=False
+):
     if send_eeg_triggers:
         try:
             port_eeg.setData(trigger_no)
