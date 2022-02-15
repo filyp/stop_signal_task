@@ -19,7 +19,7 @@ def show_info(win, file_name, text_size, screen_width, triggers_list, part_name,
     hello_msg = visual.TextStim(win=win, antialias=True, font=u'Arial',
                                 text=hello_msg, height=text_size,
                                 wrapWidth=screen_width, color=u'black',
-                                alignHoriz='center', alignVert='center')
+                                )
     hello_msg.draw()
     win.flip()
     key = event.waitKeys(keyList=['f7', 'return', 'space'])

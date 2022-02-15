@@ -26,7 +26,7 @@ def run():
     part_id, sex, age, experiment_version, date = experiment_info(config['Observer'])
     date = date.replace(":", "-")
     part_name = "{}_{}_{}_{}_{}".format(experiment_version, part_id, sex, age, date)
-    print part_name
+    print(part_name)
     # EEG triggers
     if config['Send_EEG_trigg']:
         port_eeg = create_eeg_port()

@@ -3,10 +3,10 @@ import random
 
 def prepare_arrows(arrows, number_of_trials):
     number_of_arrows_types = len(arrows)
-    arrows_table = range(number_of_arrows_types) * (number_of_trials / number_of_arrows_types)
+    arrows_table = list(range(number_of_arrows_types)) * int(number_of_trials / number_of_arrows_types)
 
     missing_trials = number_of_trials % number_of_arrows_types
-    rest_trials = range(number_of_arrows_types)
+    rest_trials = list(range(number_of_arrows_types))
     random.shuffle(rest_trials)
 
     arrows_table += rest_trials[:missing_trials]
@@ -20,9 +20,9 @@ def prepare_arrows(arrows, number_of_trials):
 def prepare_stops(stops, number_of_trials, arrows_table, percent_of_trials_with_stop=25):
     number_of_stop_types = len(stops)
     number_of_trials_with_stop = int(round(number_of_trials * percent_of_trials_with_stop / 100.))
-    stop_table = range(number_of_stop_types) * (number_of_trials_with_stop / number_of_stop_types)
+    stop_table = list(range(number_of_stop_types)) * int(number_of_trials_with_stop / number_of_stop_types)
     missing_trials = number_of_trials_with_stop % number_of_stop_types
-    rest_trials = range(number_of_stop_types)
+    rest_trials = list(range(number_of_stop_types))
     stop_table += rest_trials[:missing_trials]
     stop_table = sorted(stop_table)
     trials_with_stop = [{'arrow': arrow, 'stop': stops[stop]} for arrow, stop in
@@ -40,7 +40,7 @@ def prepare_stops(stops, number_of_trials, arrows_table, percent_of_trials_with_
 
 
 def blocks_creator(trials, num, breaks):
-    blocks = [trials[i:i + len(trials) / num] for i in range(0, len(trials), len(trials) / num)]
+    blocks = [trials[i:i + int(len(trials) / num)] for i in range(0, len(trials), int(len(trials) / num))]
     # add instructions
     blocks = [{'trials': block, 'text_after_block': text} for block, text in zip(blocks, breaks)]
     return blocks

@@ -13,7 +13,7 @@ possible_audio_format = ('mp3', 'au', 'mp2', 'wav', 'wma', 'ogg')
 def load_config():
     try:
         with open(join("docs", "config.yaml")) as yaml_file:
-            doc = yaml.load(yaml_file)
+            doc = yaml.safe_load(yaml_file)
         return doc
     except:
         raise Exception("Can't load config file")
@@ -41,7 +41,7 @@ def load_data(win, folder_name, config, screen_res):
                         text = text.split('\n')[0]
                         word = visual.TextStim(win=win, antialias=True, font=u'Arial', text=text,
                                                height=config['Text_stimulus_size'], wrapWidth=screen_res['width'],
-                                               color=u'black', alignHoriz='center', alignVert='center')
+                                               color=u'black')
                         data.append({"TYPE": 'text', "NAME": trigger_name, "STIM": word})
             elif name.split(".")[1] in possible_images_format:
                 image = visual.ImageStim(win, image=path, size=config['Image_stimulus_size'],
@@ -82,7 +82,7 @@ def load_data_in_folders(win, folder_name, config, screen_res):
                             text = text.split('\n')[0]
                             word = visual.TextStim(win=win, antialias=True, font=u'Arial', text=text,
                                                    height=config['Text_stimulus_size'], wrapWidth=screen_res['width'],
-                                                   color=u'black', alignHoriz='center', alignVert='center')
+                                                   color=u'black')
                             data.append({"TYPE": 'text', "NAME": folder + '_' + trigger_name, "STIM": word})
                 elif name[-3:] in possible_images_format:
                     image = visual.ImageStim(win, image=path, size=config['Image_stimulus_size'],
@@ -149,14 +149,14 @@ def prepare_words(win, folder_name, config, screen_res, experiment_version):
         exp_data = []
         train_data = []
         file = os.listdir(folder_name)[0]
-        print join(folder_name, file)
+        print(join(folder_name, file))
         with open(join(folder_name, file), 'r') as f:
             data = csv.reader(f)
             for idx, row in enumerate(data):
                 if idx != 0 and row[3] in [experiment_version, "TREN"]:
-                    word = visual.TextStim(win=win, antialias=True, font=u'Arial', text=row[1].decode('utf-8'),
+                    word = visual.TextStim(win=win, antialias=True, font=u'Arial', text=row[1],
                                            height=config['Text_stimulus_size'], wrapWidth=screen_res['width'],
-                                           color=u'black', alignHoriz='center', alignVert='center')
+                                           color=u'black')
                     trial = {'NAWL_NR': row[0], 'WORD': row[1], 'WORD_EMO': row[2],
                              'WORD_LIST': row[3], "STIM": word, "TYPE": 'text'}
                     if row[3] == "TREN":
@@ -165,7 +165,8 @@ def prepare_words(win, folder_name, config, screen_res, experiment_version):
                     else:
                         trial["WORD_TYPE"] = 'exp'
                         exp_data.append(trial)
-    except:
+    except Exception as ex:
+        print(ex)
         raise Exception("Can't load {} file".format(os.listdir(folder_name)[0]))
     shuffle(exp_data)
     shuffle(train_data)
