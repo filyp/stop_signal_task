@@ -205,16 +205,16 @@ def run_trial(
 def update_stops_times(trial, config, response, stops_times):
     if trial["stop"] is not None:
         wait_time_index = config["Possible_wait_to_stop"].index(
-            stops_times[trial["stop"]["WORD_EMO"]]
+            stops_times[trial["stop"]["STOP_TYPE"]]
         )
         if response is None:
             if wait_time_index != len(config["Possible_wait_to_stop"]) - 1:
-                stops_times[trial["stop"]["WORD_EMO"]] = config["Possible_wait_to_stop"][
+                stops_times[trial["stop"]["STOP_TYPE"]] = config["Possible_wait_to_stop"][
                     wait_time_index + 1
                 ]
         else:
             if wait_time_index != 0:
-                stops_times[trial["stop"]["WORD_EMO"]] = config["Possible_wait_to_stop"][
+                stops_times[trial["stop"]["STOP_TYPE"]] = config["Possible_wait_to_stop"][
                     wait_time_index - 1
                 ]
     return stops_times
@@ -260,7 +260,7 @@ def show(
         not_stopped_trials = 0.0
         for trial in block["trials"]:
             if trial["stop"] is not None:
-                real_stop_show_start = stops_times[trial["stop"]["WORD_EMO"]]
+                real_stop_show_start = stops_times[trial["stop"]["STOP_TYPE"]]
                 stop_show_start = real_stop_show_start - one_frame_time
                 stop_show_end = stop_show_start + config["Stop_show_time"]
             else:
@@ -309,9 +309,9 @@ def show(
                         "RE_time": reaction_time,
                         "RE_true": config["Keys"][trial["arrow"]["NAME"]],
                         "ST_type": trial["stop"]["TYPE"],
-                        "ST_name": trial["stop"]["WORD"],
-                        "ST_wait_time": stops_times[trial["stop"]["WORD_EMO"]],
-                        "WORD_EMO": trial["stop"]["WORD_EMO"],
+                        "ST_name": trial["stop"]["NAME"],
+                        "ST_wait_time": stops_times[trial["stop"]["STOP_TYPE"]],
+                        "STOP_TYPE": trial["stop"]["STOP_TYPE"],
                     }
                 )
             else:
@@ -326,7 +326,7 @@ def show(
                         "ST_type": None,
                         "ST_name": None,
                         "ST_wait_time": None,
-                        "WORD_EMO": None,
+                        "STOP_TYPE": None,
                     }
                 )
             trial_number += 1

@@ -1,23 +1,28 @@
 Observer:
-Ophthalmic_procedure: true
-Send_EEG_trigg: true
+Ophthalmic_procedure: false
+Send_EEG_trigg: false
 Send_Nirs_trigg: false
 
-Keys: {left: lctrl, right: num_separator}
-Keys_description: {lctrl: lewy pomaranczowy klawisz, num_separator: prawy pomaranczowy klawisz}
+# Keys: {left: lctrl, right: num_separator}
+# Keys_description: {lctrl: lewy pomaranczowy klawisz, num_separator: prawy pomaranczowy klawisz}
+Keys: {left: lshift, right: rshift}
+Keys_description: {lshift: lewy pomaranczowy klawisz, rshift: prawy pomaranczowy klawisz}
 Keys_randomization: false
 
 Number_of_experiment_blocks: 8
 Number_of_experiment_trials: 648
-Number_of_training_1_trials: 10
-Number_of_training_2_trials: 20
+# Number_of_training_1_trials: 10
+# Number_of_training_2_trials: 20
+Number_of_training_1_trials: 1
+Number_of_training_2_trials: 1
 
 Percent_of_trials_with_stop: 25
 Possible_wait_to_stop: [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]
 Start_wait_to_stop: 0.15
 Stop_show_time: 1.0
 
-Go_show_time: 0.1
+# Go_show_time: 0.1
+Go_show_time: 1.0
 Break_between_fixation_and_arrow: 0.0
 Fixation_show_time: 0.8
 Resp_time: 1.0
@@ -34,4 +39,4 @@ Show_stopped_ratio: true
 Screen_color: [0,0,0]
 Text_size: 30
 Text_stimulus_size: 30
-Image_stimulus_size: [80, 50]
+Image_stimulus_size: {left: [80, 50], right: [80, 50], stop: [150, 150]}

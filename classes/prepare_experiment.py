@@ -89,7 +89,7 @@ def prepare_trials(
 def create_stops_times_dict(stops, start_wait_to_stop):
     stops_times = dict()
     for stop in stops:
-        stops_times[stop["WORD_EMO"]] = start_wait_to_stop
+        stops_times[stop["STOP_TYPE"]] = start_wait_to_stop
     return stops_times
 
 

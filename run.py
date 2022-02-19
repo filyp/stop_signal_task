@@ -43,18 +43,19 @@ def run():
     win, screen_res, frames_per_sec = create_win(screen_color=config["Screen_color"])
 
     # prepare training
-    train_data, exp_data = prepare_words(
-        win=win,
-        folder_name="stops",
-        config=config,
-        screen_res=screen_res,
-        experiment_version=experiment_version,
-    )
+    # train_stops, exp_stops = prepare_words(
+    #     win=win,
+    #     folder_name="stops",
+    #     config=config,
+    #     screen_res=screen_res,
+    #     experiment_version=experiment_version,
+    # )
     arrows = load_data(win=win, folder_name="arrows", config=config, screen_res=screen_res)
+    stops = load_data(win=win, folder_name="stops", config=config, screen_res=screen_res)
 
     training_block_1 = prepare_trials(
         number_of_blocks=1,
-        stops=train_data,
+        stops=stops,
         arrows=arrows,
         number_of_experiment_trials=config["Number_of_training_1_trials"],
         percent_of_trials_with_stop=0,
@@ -63,7 +64,7 @@ def run():
 
     training_block_2 = prepare_trials(
         number_of_blocks=1,
-        stops=train_data,
+        stops=stops,
         arrows=arrows,
         number_of_experiment_trials=config["Number_of_training_2_trials"],
         percent_of_trials_with_stop=config["Percent_of_trials_with_stop"],
@@ -81,13 +82,13 @@ def run():
         number_of_blocks=config["Number_of_experiment_blocks"],
         number_of_experiment_trials=config["Number_of_experiment_trials"],
         percent_of_trials_with_stop=config["Percent_of_trials_with_stop"],
-        stops=exp_data,
+        stops=stops,
         arrows=arrows,
         messages=breaks,
     )
 
     stops_times = create_stops_times_dict(
-        stops=exp_data, start_wait_to_stop=config["Start_wait_to_stop"]
+        stops=stops, start_wait_to_stop=config["Start_wait_to_stop"]
     )
     stops_times_train = copy.copy(stops_times)
 

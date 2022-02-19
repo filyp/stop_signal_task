@@ -26,7 +26,7 @@ def save_beh(data, name):
             "ST_type",
             "ST_name",
             "ST_wait_time",
-            "WORD_EMO",
+            "STOP_TYPE",
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()

@@ -48,18 +48,23 @@ def load_data(win, folder_name, config, screen_res):
                             wrapWidth=screen_res["width"],
                             color="black",
                         )
-                        data.append({"TYPE": "text", "NAME": trigger_name, "STIM": word})
+                        data.append(
+                            {"TYPE": "text", "NAME": trigger_name, "STIM": word, "STOP_TYPE": 0}
+                        )
             elif name.split(".")[1] in possible_images_format:
+                stimulus_name = name.split(".")[0]
+                stimulus_size = config["Image_stimulus_size"][stimulus_name]
                 image = visual.ImageStim(
                     win,
                     image=path,
-                    size=config["Image_stimulus_size"],
+                    size=stimulus_size,
                     pos=(0, 0),
-                    interpolate=True,
                 )
-                data.append({"TYPE": "image", "NAME": name.split(".")[0], "STIM": image})
+                data.append({"TYPE": "image", "NAME": stimulus_name, "STIM": image, "STOP_TYPE": 0})
             elif name.split(".")[1] in possible_audio_format:
-                data.append({"TYPE": "sound", "NAME": name.split(".")[0], "STIM": path})
+                data.append(
+                    {"TYPE": "sound", "NAME": name.split(".")[0], "STIM": path, "STOP_TYPE": 0}
+                )
             else:
                 raise Exception("Error while loading a file " + name)
         except:
