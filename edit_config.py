@@ -23,9 +23,7 @@ CONFIG_KEYS = [
     "Stop_show_time",
     "Resp_time",
     "Go_rest_time",
-    "Go_rest_time_jitter",
     "Stop_rest_time",
-    "Stop_rest_time_jitter",
     # Triggers info
     "Ophthalmic_procedure",
     "Send_EEG_trigg",
@@ -52,12 +50,6 @@ def config_verification():
     for key in CONFIG_KEYS:
         assert key in config.keys(), "No " + key + " in config"
 
-    assert (
-        config["Go_rest_time_jitter"] <= config["Go_rest_time"]
-    ), "Go_rest_time_jitter is longer than Go_rest_time"
-    assert (
-        config["Stop_rest_time_jitter"] <= config["Stop_rest_time"]
-    ), "Stop_rest_time_jitter is longer than Stop_rest_time"
     assert (
         config["Number_of_experiment_blocks"] <= config["Number_of_experiment_trials"]
     ), "More blocks than trials"

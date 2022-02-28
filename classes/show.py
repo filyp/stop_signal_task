@@ -292,11 +292,10 @@ def show(
 
             # rest
             if response is not None:
-                jitter = (2 * random.random() - 1) * config["Go_rest_time_jitter"]
-                time.sleep(config["Go_rest_time"] + jitter)
+                rest_time = random.uniform(*config["Go_rest_time"])
             else:
-                jitter = (2 * random.random() - 1) * config["Stop_rest_time_jitter"]
-                time.sleep(config["Stop_rest_time"] + jitter)
+                rest_time = random.uniform(*config["Stop_rest_time"])
+            time.sleep(rest_time)
 
             # add data
             if trial["stop"] is not None:

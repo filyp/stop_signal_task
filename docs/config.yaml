@@ -26,10 +26,8 @@ Go_show_time: 1.0
 Break_between_fixation_and_arrow: 0.0
 Fixation_show_time: 0.8
 Resp_time: 1.0
-Go_rest_time: 1.15
-Go_rest_time_jitter: 0.15
-Stop_rest_time: 1.15
-Stop_rest_time_jitter: 0.15
+Go_rest_time: [0.8, 1.0]
+Stop_rest_time: [0.8, 1.0]
 
 Show_answers_correctness: true
 Show_keys_mapping: false
