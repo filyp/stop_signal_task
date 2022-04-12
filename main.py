@@ -14,14 +14,17 @@ from edit_config import config_verification
 
 import os
 import copy
+import sys
 
 __author__ = "ociepkam"
 
 
 def run():
-    # Prepare experiment
-    config_verification()
-    config = load_config()
+    # Load config
+    config_path = sys.argv[1]
+    config_verification(config_path)
+    config = load_config(config_path)
+
     eeg_info()
     part_id, sex, age, experiment_version, date = experiment_info(config["Observer"])
     date = date.replace(":", "-")

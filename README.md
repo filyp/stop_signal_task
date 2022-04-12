@@ -1,6 +1,12 @@
 # SST - Zadanie z sygnałem STOP
 
-### Przygotowanie eksperymentu
+## Uruchamianie
+
+```
+python main.py config/config.yaml
+```
+
+## Przygotowanie eksperymentu
 
 <pre>
 Aby przygotowac eksperyment wykonaj pokolei następujące kroki:
@@ -11,7 +17,7 @@ Aby przygotowac eksperyment wykonaj pokolei następujące kroki:
     * Ustawianie configu odbywa sie w dwóch krokach (pierwszy można pominąć, ale ułatwia on konfigurację):
         a) Uruchomienie programu "edit_config.py"
         -------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!------------------------------
-        b) Edycja pliku "congig.yaml" z folderu "docs
+        b) Edycja pliku "congig.yaml" z folderu "config"
         ---------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------------
 3) Uruchamianie
     * Gdy mamy poprawnie przygotowana procedurę dla każdej osoby badanej wystarczy uruchomic program "run.py"
@@ -25,7 +31,7 @@ Aby przygotowac eksperyment wykonaj pokolei następujące kroki:
     <font color="red">* UWAGA: dane zapisują się tylko i wyłącznie na koniec procedury. Jeżeli z jakiegokolwiek powodu procedura zostanie przerwana wszystkie dane zostana utracone!</font>
 </pre>
 
-### Struktura procedury
+## Struktura procedury
 
 <pre>
 Procedura zawiera nastepujące foldery:
@@ -50,7 +56,7 @@ Procedura zawiera nastepujące foldery:
 2) classes
     * Zawiera pliki z kodem napisanym w pythonie (Psychopy 1.82.01)
 
-3) docs
+3) config
     * zawiera plik 'config.yaml', w którym można ustawić wszystkie konfiguracje procedury (patrz rozdział config).
     
 4) messages

@@ -242,7 +242,7 @@ def show(
     TRIGGERS_LIST = triggers_list
     TRIGGER_NO = trigger_no
 
-    fixation = visual.TextStim(win, color="black", text="+", height=2 * config["Text_size"])
+    fixation = visual.TextStim(win, color="black", text="+", height=2 * config["Text_size"], pos=(0, 6))
 
     one_frame_time = 1.0 / frames_per_sec
 

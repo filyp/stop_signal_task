@@ -43,8 +43,8 @@ CONFIG_KEYS = [
 ]
 
 
-def config_verification():
-    config = load_config()
+def config_verification(config_path):
+    config = load_config(config_path)
 
     # All elements
     for key in CONFIG_KEYS:
@@ -127,7 +127,7 @@ def main():
 
     args_dict["Keys"] = keys
 
-    with open("docs/config.yaml", "w") as save_file:
+    with open("config/config.yaml", "w") as save_file:
         save_file.write(yaml.dump(args_dict))
 
     config_verification()

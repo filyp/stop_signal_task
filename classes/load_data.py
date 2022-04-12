@@ -10,9 +10,9 @@ possible_images_format = ("bmp", "jpg", "png", "gif")
 possible_audio_format = ("mp3", "au", "mp2", "wav", "wma", "ogg")
 
 
-def load_config():
+def load_config(config_path):
     try:
-        with open(join("docs", "config.yaml")) as yaml_file:
+        with open(config_path) as yaml_file:
             doc = yaml.safe_load(yaml_file)
         return doc
     except:
