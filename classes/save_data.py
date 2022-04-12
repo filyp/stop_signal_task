@@ -3,12 +3,12 @@ import csv
 
 
 def save_triggers(data, name):
-    data = [row[0] + ":" + row[1] + "\n" for row in data]
-    with open(
-        os.path.join("results", "triggers_maps", "triggerMap_{}.txt".format(name)), "w"
-    ) as mapFile:
-        for row in data:
-            mapFile.writelines(row)
+    rows = [row[0] + ":" + row[1] for row in data]
+    path = os.path.join("results", "triggers_maps", "triggerMap_{}.txt".format(name))
+    with open(path, "wb") as map_file:
+        text = "\n".join(rows)
+        # this must be done in such an awkward way, to prevent OS specific EOL
+        map_file.write(bytes(text, "UTF-8"))
 
 
 def save_beh(data, name):
