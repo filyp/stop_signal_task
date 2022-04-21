@@ -5,7 +5,17 @@ from classes.load_data import read_text_from_file
 from classes.save_data import save_beh, save_triggers
 
 
-def show_info(win, file_name, text_size, screen_width, triggers_list, part_name, data, insert=""):
+def show_info(
+    win,
+    file_name,
+    text_size,
+    screen_width,
+    triggers_list,
+    part_name,
+    data,
+    insert="",
+    results_dir="",
+):
     """
     Clear way to show info message into screen.
     :param win:
@@ -29,8 +39,8 @@ def show_info(win, file_name, text_size, screen_width, triggers_list, part_name,
     win.flip()
     key = event.waitKeys(keyList=["f7", "return", "space"])
     if key == ["f7"]:
-        save_beh(data=data, name=part_name)
-        save_triggers(data=triggers_list, name=part_name)
+        save_beh(data=data, name=part_name, results_dir=results_dir)
+        save_triggers(data=triggers_list, name=part_name, results_dir=results_dir)
         exit(0)
     win.flip()
 

@@ -18,12 +18,12 @@ TRIGGERS_LIST = list()
 TRIGGER_NO = 0
 
 
-def draw_fixation(win, fixation, config, part_id, beh):
+def draw_fixation(win, fixation, config, part_id, beh, results_dir):
     fixation.setAutoDraw(True)
     win.flip()
     time.sleep(config["Fixation_show_time"])
     fixation.setAutoDraw(False)
-    check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST)
+    check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST, results_dir=results_dir)
     win.flip()
 
 
@@ -107,6 +107,7 @@ def run_trial(
     real_stop_show_start,
     part_id,
     beh,
+    results_dir,
 ):
     global PORT_EEG, TRIGGER_NO, TRIGGERS_LIST
 
@@ -123,7 +124,7 @@ def run_trial(
         trigger_name=trigger_name,
     )
 
-    check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST)
+    check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST, results_dir=results_dir)
     arrow_on = True
     stop_on = None
     event.clearEvents()
@@ -182,7 +183,7 @@ def run_trial(
                 )
             response = key[0]
             break
-        check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST)
+        check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST, results_dir=results_dir)
         if change:
             win.flip()
 
@@ -233,6 +234,7 @@ def show(
     port_nirs=None,
     part_id="",
     data=[],
+    results_dir="",
 ):
     global PORT_EEG, PORT_NIRS, TRIGGERS_LIST, TRIGGER_NO, SYSTEM
     SYSTEM = platform.system()
@@ -271,11 +273,20 @@ def show(
                 stop_show_end = None
 
             # draw fixation
-            draw_fixation(win=win, fixation=fixation, config=config, part_id=part_id, beh=data)
+            draw_fixation(
+                win=win,
+                fixation=fixation,
+                config=config,
+                part_id=part_id,
+                beh=data,
+                results_dir=results_dir,
+            )
 
             # break between fixation and arrow
             time.sleep(config["Break_between_fixation_and_arrow"])
-            check_exit(part_id=part_id, beh=data, triggers_list=TRIGGERS_LIST)
+            check_exit(
+                part_id=part_id, beh=data, triggers_list=TRIGGERS_LIST, results_dir=results_dir
+            )
 
             # arrow, stop and resp
             reaction_time, response = run_trial(
@@ -290,6 +301,7 @@ def show(
                 real_stop_show_start=real_stop_show_start,
                 part_id=part_id,
                 beh=data,
+                results_dir=results_dir,
             )
 
             # rest
@@ -391,6 +403,7 @@ def show(
             triggers_list=triggers_list,
             part_name=part_id,
             data=data,
+            results_dir=results_dir,
         )
 
     return data, TRIGGERS_LIST

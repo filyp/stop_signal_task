@@ -44,7 +44,7 @@ CONFIG_KEYS = [
 
 
 def config_verification(config_path):
-    config = load_config(config_path)
+    config, _ = load_config(config_path)
 
     # All elements
     for key in CONFIG_KEYS:

@@ -1,4 +1,7 @@
 import os
+import json
+import hashlib
+
 from psychopy import visual
 import codecs
 from os.path import join
@@ -12,11 +15,16 @@ possible_audio_format = ("mp3", "au", "mp2", "wav", "wma", "ogg")
 
 def load_config(config_path):
     try:
-        with open(config_path) as yaml_file:
-            doc = yaml.safe_load(yaml_file)
-        return doc
+        with open(config_path, encoding="utf8") as yaml_file:
+            config = yaml.safe_load(yaml_file)
     except:
         raise Exception("Can't load config file")
+
+    # compute hash of config file to know for sure which config version was used
+    unique_config_string = json.dumps(config, sort_keys=True, ensure_ascii=True)
+    short_hash = hashlib.sha1(unique_config_string.encode("utf-8")).hexdigest()[:6]
+
+    return config, short_hash
 
 
 def load_data(win, folder_name, config, screen_res):

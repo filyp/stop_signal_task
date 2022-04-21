@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import shutil
+import os
+import copy
+import sys
+
+from psychopy import logging
+
 from classes.prepare_experiment import prepare_trials, create_stops_times_dict, randomize_buttons
 from classes.load_data import load_data, load_config, load_data_in_folders, prepare_words
 from classes.screen import create_win
@@ -12,9 +19,6 @@ from classes.triggers import create_eeg_port, create_nirs_dev
 from classes.show_info import show_info, prepare_buttons_info
 from edit_config import config_verification
 
-import os
-import copy
-import sys
 
 __author__ = "ociepkam"
 
@@ -23,7 +27,15 @@ def run():
     # Load config
     config_path = sys.argv[1]
     config_verification(config_path)
-    config = load_config(config_path)
+
+    config, config_hash = load_config(config_path)  # copy config file to results folder
+    experiment_name = os.path.split(config_path)[-1]
+    experiment_name = experiment_name.split(".")[0]
+    experiment_name = experiment_name + "_" + config_hash
+    results_dir = os.path.join("results", experiment_name)
+    os.makedirs(results_dir, exist_ok=True)
+    shutil.copy2(config_path, results_dir)
+    logging.data(f"Experiment name: {experiment_name}")
 
     eeg_info()
     part_id, sex, age, experiment_version, date = experiment_info(config["Observer"])
@@ -129,6 +141,7 @@ def run():
             triggers_list=[],
             part_name=part_name,
             data=[],
+            results_dir=results_dir,
         )
 
     # Training
@@ -143,6 +156,7 @@ def run():
         triggers_list=[],
         part_id=part_name,
         data=[],
+        results_dir=results_dir,
     )
 
     # Experiment
@@ -159,6 +173,7 @@ def run():
         triggers_list=triggers_list,
         part_id=part_name,
         data=beh,
+        results_dir=results_dir,
     )
 
     # Experiment end
@@ -166,8 +181,8 @@ def run():
     #           screen_width=screen_res['width'], triggers_list=triggers_list, part_name=part_name, data=beh)
 
     # Save data
-    save_beh(data=beh, name=part_name)
-    save_triggers(data=triggers_list, name=part_name)
+    save_beh(data=beh, name=part_name, results_dir=results_dir)
+    save_triggers(data=triggers_list, name=part_name, results_dir=results_dir)
 
 
 run()
