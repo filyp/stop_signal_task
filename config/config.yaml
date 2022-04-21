@@ -8,6 +8,7 @@ Send_Nirs_trigg: false
 Keys: {left: lshift, right: rshift}
 Keys_description: {lshift: lewy pomaranczowy klawisz, rshift: prawy pomaranczowy klawisz}
 Keys_randomization: false
+Use_joystick: false
 
 Number_of_experiment_blocks: 8
 Number_of_experiment_trials: 648

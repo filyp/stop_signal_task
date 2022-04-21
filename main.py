@@ -7,6 +7,7 @@ import copy
 import sys
 
 from psychopy import logging
+from psychopy.hardware import joystick
 
 from classes.prepare_experiment import prepare_trials, create_stops_times_dict, randomize_buttons
 from classes.load_data import load_data, load_config, load_data_in_folders, prepare_words
@@ -111,6 +112,16 @@ def run():
     if config["Keys_randomization"]:
         config["Keys"] = randomize_buttons(config["Keys"])
 
+    # connect joysitck
+    if config["Use_joystick"]:
+        if joystick.getNumJoysticks() == 0:
+            raise RuntimeError(
+                "No joystick found. On linux you need to run this command first: modprobe joydev"
+            )
+        joy = joystick.Joystick(0)
+    else:
+        joy = None
+
     # Run experiment
 
     # Ophthalmic procedure
@@ -157,6 +168,7 @@ def run():
         part_id=part_name,
         data=[],
         results_dir=results_dir,
+        joy=joy,
     )
 
     # Experiment
@@ -174,6 +186,7 @@ def run():
         part_id=part_name,
         data=beh,
         results_dir=results_dir,
+        joy=joy,
     )
 
     # Experiment end

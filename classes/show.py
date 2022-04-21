@@ -1,9 +1,10 @@
-from psychopy import visual, event, core
 import time
 import random
 import pygame
 import pyglet
 import platform
+
+from psychopy import visual, event, core, logging
 
 from classes.show_info import show_info, break_info, prepare_buttons_info
 from classes.check_exit import check_exit
@@ -16,6 +17,21 @@ PORT_EEG = None
 PORT_NIRS = None
 TRIGGERS_LIST = list()
 TRIGGER_NO = 0
+
+
+def get_joystick_input(joy):
+    x = joy.getX()
+    y = joy.getY()
+    responses = []
+    if x == -1:
+        responses.append("left")
+    elif x == 1:
+        responses.append("right")
+    if y == 1:  # y axis is inverted
+        responses.append("down")
+    elif y == -1:
+        responses.append("up")
+    return responses
 
 
 def draw_fixation(win, fixation, config, part_id, beh, results_dir):
@@ -108,6 +124,7 @@ def run_trial(
     part_id,
     beh,
     results_dir,
+    joy,
 ):
     global PORT_EEG, TRIGGER_NO, TRIGGERS_LIST
 
@@ -164,8 +181,14 @@ def run_trial(
                 stop_stimulus(stimulus=trial["stop"])
                 stop_on = False
 
-        key = event.getKeys(keyList=config["Keys"].values())
-        if key:
+        if joy is not None:
+            # use joystick for responses
+            keys = get_joystick_input(joy)
+        else:
+            # use keyboard for responses
+            keys = event.getKeys(keyList=config["Keys"].values())
+
+        if keys:
             reaction_time = resp_clock.getTime()
             TRIGGER_NO, TRIGGERS_LIST = prepare_trigger(
                 trigger_type=TriggerTypes.RE,
@@ -181,10 +204,11 @@ def run_trial(
                     send_eeg_triggers=config["Send_EEG_trigg"],
                     send_nirs_triggers=config["Send_Nirs_trigg"],
                 )
-            response = key[0]
+            response = keys[0]
             break
         check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST, results_dir=results_dir)
-        if change:
+        # if change:
+        if True:
             win.flip()
 
     if arrow_on is True:
@@ -235,6 +259,7 @@ def show(
     part_id="",
     data=[],
     results_dir="",
+    joy=None,
 ):
     global PORT_EEG, PORT_NIRS, TRIGGERS_LIST, TRIGGER_NO, SYSTEM
     SYSTEM = platform.system()
@@ -272,6 +297,11 @@ def show(
                 stop_show_start = None
                 stop_show_end = None
 
+            if joy is not None:
+                # before starting trial, make sure joystick is centered
+                while get_joystick_input(joy) != []:
+                    win.flip()
+
             # draw fixation
             draw_fixation(
                 win=win,
@@ -302,6 +332,7 @@ def show(
                 part_id=part_id,
                 beh=data,
                 results_dir=results_dir,
+                joy=joy,
             )
 
             # rest
