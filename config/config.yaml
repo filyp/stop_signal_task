@@ -36,6 +36,6 @@ Show_response_time: true
 Show_stopped_ratio: true
 
 Screen_color: [0,0,0]
-Text_size: 30
-Text_stimulus_size: 30
-Image_stimulus_size: {left: [80, 50], right: [80, 50], stop: [150, 150]}
+Text_size: 0.02
+Text_stimulus_size: 0.02
+Image_stimulus_size: {left: [0.06, 0.0375], right: [0.06, 0.0375], stop: [0.1125, 0.1125]}
