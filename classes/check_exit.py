@@ -2,7 +2,7 @@ from psychopy import event, logging
 from classes.save_data import save_beh, save_triggers
 
 
-def check_exit(key="f7", part_id="", beh=None, triggers_list=None, results_dir=""):
+def check_exit(key="escape", part_id="", beh=None, triggers_list=None, results_dir=""):
     stop = event.getKeys(keyList=[key])
     if len(stop) > 0:
         if beh is not None and triggers_list is not None and results_dir != "":

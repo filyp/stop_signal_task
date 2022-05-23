@@ -56,7 +56,8 @@ def run():
     trigger_no = 0
 
     # screen
-    win, screen_res, frames_per_sec = create_win(screen_color=config["Screen_color"])
+    screen_number = config.get("Screen_number", -1)
+    win, screen_res, frames_per_sec = create_win(screen_color=config["Screen_color"], screen_number=screen_number)
 
     # prepare training
     # train_stops, exp_stops = prepare_words(

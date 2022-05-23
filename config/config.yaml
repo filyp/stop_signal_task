@@ -5,8 +5,8 @@ Send_Nirs_trigg: false
 
 # Keys: {left: lctrl, right: num_separator}
 # Keys_description: {lctrl: lewy pomaranczowy klawisz, num_separator: prawy pomaranczowy klawisz}
-Keys: {left: lshift, right: rshift}
-Keys_description: {lshift: lewy pomaranczowy klawisz, rshift: prawy pomaranczowy klawisz}
+Keys: {left: lctrl, right: rctrl}
+Keys_description: {lctrl: lewy pomaranczowy klawisz, rctrl: prawy pomaranczowy klawisz}
 Keys_randomization: false
 Use_joystick: false
 
@@ -39,3 +39,4 @@ Screen_color: [0,0,0]
 Text_size: 0.02
 Text_stimulus_size: 0.02
 Image_stimulus_size: {left: [0.06, 0.0375], right: [0.06, 0.0375], stop: [0.1125, 0.1125]}
+Screen_number: -1       # 0 is built-in; 1 is external; -1 means "last", so it will be external if external is connected, otherwise built-in
