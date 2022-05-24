@@ -35,8 +35,8 @@ Show_keys_mapping: false
 Show_response_time: true
 Show_stopped_ratio: true
 
-Screen_color: [0,0,0]
-Text_size: 0.02
-Text_stimulus_size: 0.02
-Image_stimulus_size: {left: [0.06, 0.0375], right: [0.06, 0.0375], stop: [0.1125, 0.1125]}
+Screen_color: 0
+Text_size: 0.037
+Text_stimulus_size: 0.037
+Image_stimulus_size: {left: [0.074, 0.046], right: [0.074, 0.046], stop: [0.139, 0.139]}
 Screen_number: -1       # 0 is built-in; 1 is external; -1 means "last", so it will be external if external is connected, otherwise built-in
