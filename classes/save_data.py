@@ -7,10 +7,9 @@ def save_triggers(data, name, results_dir):
     os.makedirs(trigger_directory, exist_ok=True)
     rows = [row[0] + ":" + row[1] for row in data]
     path = os.path.join(trigger_directory, "triggerMap_{}.txt".format(name))
-    with open(path, "wb") as map_file:
-        text = "\n".join(rows)
-        # this must be done in such an awkward way, to prevent OS specific EOL
-        map_file.write(bytes(text, "UTF-8"))
+    with open(path, "w") as map_file:
+        lines = ((trigger + "\n") for trigger in rows)
+        map_file.writelines(lines)
 
 
 def save_beh(data, name, results_dir):
