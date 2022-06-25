@@ -41,7 +41,7 @@ def run():
     eeg_info()
     part_id, experiment_version, date = experiment_info(config["Observer"])
     date = date.replace(":", "-")
-    part_name = "{}-{}-{}".format(experiment_version, part_id, date)
+    part_name = "{}-{}-{}".format(part_id, experiment_version, date)
     print(part_name)
     # EEG triggers
     if config["Send_EEG_trigg"]:
