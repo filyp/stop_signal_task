@@ -14,16 +14,14 @@ def experiment_info(observer):
     my_dlg = gui.Dlg(title="SST")
     my_dlg.addText("Informacje:")
     my_dlg.addField("ID:")
-    my_dlg.addField("Wiek:")
-    my_dlg.addField("Plec:", choices=["Mezczyzna", "Kobieta"])
-    my_dlg.addField("Wersja:", choices=["A", "B"])
+    my_dlg.addField("Wersja:", choices=["*", "A", "B"])
 
     my_dlg.show()
     if not my_dlg.OK:
         exit(1)
 
-    #          id               sex             age          test version
-    return my_dlg.data[0], my_dlg.data[2], my_dlg.data[1], my_dlg.data[3], date
+    #          id                test version
+    return my_dlg.data[0], my_dlg.data[1], date
 
 
 def eeg_info():
@@ -32,7 +30,7 @@ def eeg_info():
     """
 
     my_dlg = gui.Dlg(title="SST")
-    my_dlg.addText("\n\tUruchom ActiView zanim zaczniesz zadanie.")
+    my_dlg.addText("\n\tZanim zaczniesz zadanie, uruchom ActiView i rozpocznij zapis.")
     my_dlg.addText("")
 
     my_dlg.show()
