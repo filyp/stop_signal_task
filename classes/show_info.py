@@ -37,8 +37,8 @@ def show_info(
     )
     hello_msg.draw()
     win.flip()
-    key = event.waitKeys(keyList=["escape", "return", "space"])
-    if key == ["escape"]:
+    key = event.waitKeys(keyList=["f7", "return", "space"])
+    if key == ["f7"]:
         save_beh(data=data, name=part_name, results_dir=results_dir)
         save_triggers(data=triggers_list, name=part_name, results_dir=results_dir)
         exit(0)
