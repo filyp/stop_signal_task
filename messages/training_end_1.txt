@@ -1,4 +1,4 @@
 Trening część 2 – z próbami, w których trzeba szybko i poprawnie reagować na
 strzałki, a ponadto próbować skutecznie wyhamować reakcję, jeśli na ekranie pojawi
-się wyraz
+się czerwony okrąg.
 Naciśnij spację, żeby rozpocząć 2 część treningu.

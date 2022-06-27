@@ -1,4 +1,4 @@
 Za chwilę rozpocznie się właściwe badanie. Pamiętaj, żeby szybko i poprawnie
 reagować na strzałki, a jednocześnie próbować skutecznie wyhamować reakcję, jeśli
-na ekranie pojawi się wyraz.
+na ekranie pojawi się czerwony okrąg.
 Naciśnij spację, żeby uruchomić badanie.
