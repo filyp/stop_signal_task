@@ -8,20 +8,17 @@ def experiment_info(observer):
     :param observer: observer_id
     :return: part_id, observer_id, date
     """
-    now = datetime.datetime.now()
-    date = now.strftime("%Y-%m-%d %H:%M")
 
     my_dlg = gui.Dlg(title="SST")
     my_dlg.addText("Informacje:")
     my_dlg.addField("ID:")
-    my_dlg.addField("Wersja:", choices=["*", "A", "B"])
 
     my_dlg.show()
     if not my_dlg.OK:
         exit(1)
 
-    #          id                test version
-    return my_dlg.data[0], my_dlg.data[1], date
+    #          id
+    return my_dlg.data[0]
 
 
 def eeg_info():
