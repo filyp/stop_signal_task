@@ -3,8 +3,8 @@ Ophthalmic_procedure: false
 Send_EEG_trigg: true
 Send_Nirs_trigg: false
 
-Keys: {left: lctrl, right: num_delete}
-Keys_description: {lctrl: lewy pomaranczowy klawisz, num_delete: prawy pomaranczowy klawisz}
+Keys: {left: lctrl, right: num_separator}
+Keys_description: {lctrl: lewy pomaranczowy klawisz, num_separator: prawy pomaranczowy klawisz}
 # Keys: {left: lctrl, right: rctrl}
 # Keys_description: {lctrl: lewy pomaranczowy klawisz, rctrl: prawy pomaranczowy klawisz}
 Keys_randomization: false
