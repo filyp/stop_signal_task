@@ -8,7 +8,7 @@ def save_triggers(data, name, results_dir):
     rows = [row[0] + ":" + row[1] for row in data]
     path = os.path.join(trigger_directory, "triggerMap_{}.txt".format(name))
     with open(path, "w") as map_file:
-        lines = ((trigger + "\n") for trigger in rows)
+        lines = ((trigger + "\r\n") for trigger in rows)
         map_file.writelines(lines)
 
 
