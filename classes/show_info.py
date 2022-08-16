@@ -79,6 +79,6 @@ def prepare_buttons_info(dict_to_show, keys_text_mapping):
 
     info_to_show = ""
     for key in new_dict:
-        info_to_show += "{} - {}\n".format(key, keys_text_mapping[new_dict[key]])
+        info_to_show += "{} - {}\n".format(key, keys_text_mapping[key])
 
     return info_to_show[:-1]

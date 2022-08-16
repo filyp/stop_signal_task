@@ -130,7 +130,8 @@ def run_trial(
 
     reaction_time = None
     response = None
-    correct_answer = config["Keys"][trial["arrow"]["NAME"]]
+    correct_answer = trial["arrow"]["NAME"]
+    all_response_keys = [key for group in config["Keys"].values() for key in group]
     trigger_name = prepare_trigger_name(
         trial=trial, stop_show_start=real_stop_show_start, correct_answer=correct_answer
     )
@@ -186,7 +187,7 @@ def run_trial(
             keys = get_joystick_input(joy)
         else:
             # use keyboard for responses
-            keys = event.getKeys(keyList=config["Keys"].values())
+            keys = event.getKeys(keyList=all_response_keys)
 
         if keys:
             reaction_time = resp_clock.getTime()
@@ -216,9 +217,16 @@ def run_trial(
     if stop_on is True:
         stop_stimulus(stimulus=trial["stop"])
     win.flip()
-    # Add response to all trial triggers
 
     if response is not None:
+        if response in config["Keys"]["left"]:
+            response = "left"
+        elif response in config["Keys"]["right"]:
+            response = "right"
+        else:
+            raise Exception("Unknown response " + response)
+
+        # Add response to all trial triggers
         TRIGGERS_LIST[-1] = (TRIGGERS_LIST[-1][0], TRIGGERS_LIST[-1][1][:-1] + response)
         TRIGGERS_LIST[-2] = (TRIGGERS_LIST[-2][0], TRIGGERS_LIST[-2][1][:-1] + response)
         if TRIGGERS_LIST[-2][1].startswith("ST"):
@@ -351,7 +359,7 @@ def show(
                         "GO_name": trial["arrow"]["NAME"],
                         "RE_key": response,
                         "RE_time": reaction_time,
-                        "RE_true": config["Keys"][trial["arrow"]["NAME"]],
+                        "RE_true": trial["arrow"]["NAME"],
                         "ST_type": trial["stop"]["TYPE"],
                         "ST_name": trial["stop"]["NAME"],
                         "ST_wait_time": stops_times[trial["stop"]["STOP_TYPE"]],
@@ -365,7 +373,7 @@ def show(
                         "GO_type": trial["arrow"]["TYPE"],
                         "GO_name": trial["arrow"]["NAME"],
                         "RE_key": response,
-                        "RE_true": config["Keys"][trial["arrow"]["NAME"]],
+                        "RE_true": trial["arrow"]["NAME"],
                         "RE_time": reaction_time,
                         "ST_type": None,
                         "ST_name": None,
@@ -378,7 +386,7 @@ def show(
             # break info
             if reaction_time is not None:
                 all_reactions_times += reaction_time
-                if response == config["Keys"][trial["arrow"]["NAME"]]:
+                if response == trial["arrow"]["NAME"]:
                     answers_correctness += 1
             else:
                 if trial["stop"] is not None:

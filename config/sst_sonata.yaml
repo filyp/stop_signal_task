@@ -3,11 +3,9 @@ Ophthalmic_procedure: false
 Send_EEG_trigg: true
 Send_Nirs_trigg: false
 
-Keys: {left: lctrl, right: num_separator}
-Keys_description: {lctrl: lewy pomaranczowy klawisz, num_separator: prawy pomaranczowy klawisz}
-# Keys: {left: lctrl, right: rctrl}
-# Keys_description: {lctrl: lewy pomaranczowy klawisz, rctrl: prawy pomaranczowy klawisz}
-Keys_randomization: false
+Keys: {left: [lctrl], right: [num_separator, num_delete, rctrl]}
+Keys_description: {left: lewy pomaranczowy klawisz, right: prawy pomaranczowy klawisz}
+Keys_randomization: false    # no longer supported!
 Use_joystick: false
 
 Number_of_experiment_blocks: 8
