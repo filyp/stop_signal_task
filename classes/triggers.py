@@ -38,7 +38,7 @@ def prepare_trigger_name(trial, correct_answer, stop_show_start=None):
         )
         name += str(stop_show_start)
     else:
-        name += "*-*-*-*-*-"
+        name += "*-*-"
     name += "*{}".format(correct_answer)
     # for response
     name += "*-"
