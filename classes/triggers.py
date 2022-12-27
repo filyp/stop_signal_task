@@ -71,3 +71,15 @@ def send_trigger(
             port_nirs.activate_line(trigger_no)
         except:
             pass
+
+
+def amend_trial_triggers_in_reaction_before_stop(triggers_list):
+    for i in range(1, 10):
+        # go back through triggers list and swap *0* for *1*
+        trigger_no, trigger_body = triggers_list[-i]
+        trigger_body = trigger_body.replace("*0*", "*1*")
+        triggers_list[-i] = (trigger_no, trigger_body)
+
+        # if we hit "GO" trigger, break
+        if "GO*" in trigger_body:
+            break

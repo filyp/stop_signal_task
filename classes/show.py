@@ -8,7 +8,7 @@ from psychopy import visual, event, core, logging
 
 from classes.show_info import show_info, break_info, prepare_buttons_info
 from classes.check_exit import check_exit
-from classes.triggers import prepare_trigger, TriggerTypes, send_trigger, prepare_trigger_name
+from classes.triggers import prepare_trigger, TriggerTypes, send_trigger, prepare_trigger_name, amend_trial_triggers_in_reaction_before_stop
 
 SYSTEM = None
 PLAYER = None
@@ -206,7 +206,8 @@ def run_trial(
                     send_nirs_triggers=config["Send_Nirs_trigg"],
                 )
             response = keys[0]
-            break
+            if trial["stop"] is None:
+                break  # don't break for stops, but show them till the end
         check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST, results_dir=results_dir)
         # if change:
         if True:
@@ -231,6 +232,10 @@ def run_trial(
         TRIGGERS_LIST[-2] = (TRIGGERS_LIST[-2][0], TRIGGERS_LIST[-2][1][:-1] + response)
         if TRIGGERS_LIST[-2][1].startswith("ST"):
             TRIGGERS_LIST[-3] = (TRIGGERS_LIST[-3][0], TRIGGERS_LIST[-3][1][:-1] + response)
+        
+        # if responded faster than stop, amend the trial
+        if trial["stop"] is not None and reaction_time < stop_show_start:
+            amend_trial_triggers_in_reaction_before_stop(TRIGGERS_LIST)
 
     return reaction_time, response
 
