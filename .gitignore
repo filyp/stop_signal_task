@@ -3,3 +3,5 @@ results
 *.pyc
 venv
 .vscode
+config/sst_sonata_test.yaml
+config/config_test.yaml

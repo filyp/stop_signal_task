@@ -205,7 +205,8 @@ def run_trial(
                     send_nirs_triggers=config["Send_Nirs_trigg"],
                 )
             response = keys[0]
-            break
+            if trial["stop"] is None:
+                break  # don't break for stops, but show them till the end
         check_exit(part_id=part_id, beh=beh, triggers_list=TRIGGERS_LIST, results_dir=results_dir)
         # if change:
         if True:
