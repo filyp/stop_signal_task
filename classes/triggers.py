@@ -8,15 +8,32 @@ class TriggerTypes(object):
     RE = "RE"
 
 
+# def create_eeg_port():
+#     try:
+#         import parallel
+
+#         port = parallel.Parallel()
+#         port.setData(0x00)
+#         return port
+#     except:
+#         raise Exception("Can't connect to EEG")
+
 def create_eeg_port():
     try:
-        import parallel
+        import serial
 
-        port = parallel.Parallel()
-        port.setData(0x00)
+        port = serial.Serial("/dev/ttyUSB0", baudrate=115200)
+        port.write(0x00)
         return port
     except:
         raise Exception("Can't connect to EEG")
+
+
+def simple_send_trigger(port_eeg, trigger_no):
+    port_eeg.write(trigger_no.to_bytes(1, 'big'))
+    time.sleep(0.005)
+    port_eeg.write(0x00)
+    time.sleep(0.005)
 
 
 def create_nirs_dev():
@@ -60,9 +77,7 @@ def send_trigger(
 ):
     if send_eeg_triggers:
         try:
-            port_eeg.setData(trigger_no)
-            time.sleep(0.01)
-            port_eeg.setData(0x00)
+            simple_send_trigger(port_eeg, trigger_no)
         except:
             pass
     if send_nirs_triggers:
