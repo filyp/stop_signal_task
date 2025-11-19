@@ -4,7 +4,7 @@ from psychopy import logging, visual, event
 from screeninfo import get_monitors
 
 
-def get_screen_res(screen_number=-1):
+def get_screen_res(screen_number=0):
     """
     Funcion that check current screen resolution. Raise OSError if can't recognise OS!
     * :return: (width, height) tuple with screen resolution.

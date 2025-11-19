@@ -16,7 +16,7 @@ PLAYER = None
 PORT_EEG = None
 PORT_NIRS = None
 TRIGGERS_LIST = list()
-TRIGGER_NO = 0
+TRIGGER_NO = 1
 
 
 def get_joystick_input(joy):

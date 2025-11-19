@@ -52,10 +52,10 @@ def run():
     else:
         port_nirs = None
     triggers_list = list()
-    trigger_no = 0
+    trigger_no = 1
 
     # screen
-    screen_number = config.get("Screen_number", -1)
+    screen_number = config.get("Screen_number", 0)
     win, screen_res, frames_per_sec = create_win(screen_color=config["Screen_color"], screen_number=screen_number)
 
     # prepare training
