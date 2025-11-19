@@ -12,10 +12,8 @@ Use_joystick: false
 
 Number_of_experiment_blocks: 8
 Number_of_experiment_trials: 648
-# Number_of_training_1_trials: 10
-# Number_of_training_2_trials: 20
-Number_of_training_1_trials: 1
-Number_of_training_2_trials: 1
+Number_of_training_1_trials: 10
+Number_of_training_2_trials: 20
 
 Percent_of_trials_with_stop: 25
 Possible_wait_to_stop: [0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]
