@@ -3,10 +3,10 @@
 ## Uruchamianie
 
 ```
-python main.py config/config.yaml
+python main.py config/sst_sonata.yaml
 ```
 
-## Przygotowanie eksperymentu
+## Przygotowanie eksperymentu (outdated)
 
 <pre>
 Aby przygotowac eksperyment wykonaj pokolei następujące kroki:
